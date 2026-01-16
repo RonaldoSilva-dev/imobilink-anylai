@@ -241,3 +241,39 @@ export type RegisteredUser = IUsuarioRegistrado;
  * @alias IRegistroProps
  */
 export type RegisterProps = IRegistroProps;
+// NO FINAL DO ARQUIVO TiposRegistro.ts, ADICIONE:
+
+// ============================================================================
+// UTILITÁRIOS PARA O HOOK (adicionar)
+// ============================================================================
+
+/**
+ * Tipo para retorno do hook useFormularioRegistro
+ * @type THookFormularioRegistro
+ */
+export type THookFormularioRegistro = {
+  dados: IFormularioRegistro;
+  erros: Record<string, string>;
+  enviado: boolean;
+  atualizarCampo: (
+    campo: keyof IFormularioRegistro,
+    valor: string | boolean | NivelExperiencia | TipoUsuario,
+  ) => void;
+  validar: () => boolean;
+  resetar: () => void;
+  setEnviado: (enviado: boolean) => void;
+};
+
+/**
+ * Tipo para função de atualização de campo
+ * Compatível com o hook useFormularioRegistro
+ * @type TAtualizarCampo
+ */
+export type TAtualizarCampo = THookFormularioRegistro["atualizarCampo"];
+
+/**
+ * Tipo para função de validação
+ * Compatível com o hook useFormularioRegistro
+ * @type TValidarFormularioHook
+ */
+export type TValidarFormularioHook = THookFormularioRegistro["validar"];
