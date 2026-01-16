@@ -5,6 +5,7 @@
  *
  * @version 1.0.0
  */
+import { IFormularioRegistro } from "./InterfacesRegistro";
 
 import { TipoUsuario, NivelExperiencia, TipoDocumento } from "./EnumsRegistro";
 
@@ -166,7 +167,10 @@ export const MENSAGENS_ERRO = {
  * Campos específicos por perfil são adicionados condicionalmente
  * @constant
  */
-export const CAMPOS_OBRIGATORIOS_POR_PERFIL: Record<TipoUsuario, string[]> = {
+export const CAMPOS_OBRIGATORIOS_POR_PERFIL: Record<
+  TipoUsuario,
+  Array<keyof IFormularioRegistro>
+> = {
   [TipoUsuario.CORRETOR]: [
     "name",
     "email",
