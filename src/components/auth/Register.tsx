@@ -1,394 +1,319 @@
 /**
  * @file Register.tsx
- * @description Componente de registro que utiliza o hook useFormularioRegistro
- * para gerenciamento de estado, validação e formatação do formulário.
- * Componente principal da funcionalidade de cadastro de usuários.
- *
- * @version 2.0.0
- * @since 2024
+ * @description Componente de registro otimizado e corrigido.
  */
 
 import React, { useState } from "react";
-
-// Contextos para autenticação e estado de carregamento
 import { useAuth } from "../../contexts/AuthContext";
 import { useLoading } from "../../contexts/LoadingContext";
-
-// Componentes de UI reutilizáveis
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
-
-// Hook personalizado para gerenciamento do formulário
 import { useFormularioRegistro } from "../../Logica/Hooks/useFormularioRegistro";
 
-// Tipos e enums para tipagem segura
 import {
   TipoUsuario,
+  OPCOES_PERFIL,
+  OPCOES_EXPERIENCIA,
   NivelExperiencia,
 } from "../../Tipos/Registro/TiposRegistro";
 
-/**
- * Interface que define as propriedades do componente Register
- * @interface RegisterProps
- * @property {() => void} onBack - Função callback executada ao clicar no botão "Voltar"
- */
-interface RegisterProps {
+interface IRegisterProps {
   onBack: () => void;
 }
 
-/**
- * Componente principal de registro de usuários
- * Gerencia todo o fluxo de criação de conta, desde a coleta de dados
- * até a confirmação de sucesso do cadastro.
- *
- * @component
- * @param {RegisterProps} props - Propriedades do componente
- * @returns {JSX.Element} Componente de registro renderizado
- *
- * @example
- * <Register onBack={() => navigate('/login')} />
- */
-const Register: React.FC<RegisterProps> = ({ onBack }) => {
-  // 🔧 CONTEXTOS
-  /**
-   * Função de registro do contexto de autenticação
-   * Responsável por enviar os dados para a API
-   * @type {Function}
-   */
+const Register: React.FC<IRegisterProps> = ({ onBack }) => {
   const { register } = useAuth();
+  const { loading: authLoading } = useLoading();
 
-  /**
-   * Estado de carregamento global da aplicação
-   * @type {boolean}
-   */
-  const { loading } = useLoading();
-
-  // 📝 HOOK PERSONALIZADO PARA FORMULÁRIO
-  /**
-   * Hook personalizado que gerencia todo o estado do formulário
-   * Inclui dados, erros, validação e funções de atualização
-   * @type {Object}
-   * @property {IFormularioRegistro} dados - Dados atuais do formulário
-   * @property {Record<string, string>} erros - Erros de validação por campo
-   * @property {Function} atualizarCampo - Atualiza um campo específico
-   * @property {Function} validar - Valida todos os campos do formulário
-   * @property {boolean} enviado - Indica se o formulário foi submetido
-   * @property {Function} setEnviado - Altera o estado de envio
-   */
   const { dados, erros, atualizarCampo, validar, enviado, setEnviado } =
     useFormularioRegistro();
 
-  // 📊 ESTADOS LOCAIS DO COMPONENTE
-  /**
-   * Estado que controla se o registro foi bem-sucedido
-   * @type {boolean}
-   */
   const [success, setSuccess] = useState(false);
-
-  /**
-   * Estado que armazena os dados do usuário após registro bem-sucedido
-   * @type {{name: string, userType: TipoUsuario} | null}
-   */
   const [registeredUser, setRegisteredUser] = useState<{
     name: string;
     userType: TipoUsuario;
   } | null>(null);
 
-  // 🎛️ HANDLERS E FUNÇÕES
-
-  /**
-   * Processa o envio do formulário de registro
-   * Valida os dados usando o hook e envia para a API
-   *
-   * @async
-   * @param {React.FormEvent} e - Evento de submit do formulário
-   * @returns {Promise<void>}
-   *
-   * @throws {Error} Se ocorrer um erro durante o registro
-   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setEnviado(false);
 
-    // Valida o formulário usando a função do hook
-    if (validar()) {
-      setEnviado(true);
+    // Primeiro validamos localmente
+    if (!validar()) return;
 
-      try {
-        // Envia os dados para a API através do contexto de autenticação
-        const result = await register(dados);
+    // Ativamos o estado de envio ANTES do try/catch
+    setEnviado(true);
 
-        if (result.success) {
-          // Registro bem-sucedido - atualiza estados
-          setRegisteredUser({
-            name: dados.name,
-            userType: dados.userType,
-          });
-          setSuccess(true);
-        } else {
-          // Registro falhou - reativa o formulário
-          setEnviado(false);
-          // Em produção, aqui seria tratado o erro de forma específica
-        }
-      } catch (error) {
+    try {
+      // Limpeza de dados: Remove strings vazias de campos opcionais
+      const formatarCampoOpcional = (valor?: string) =>
+        valor?.trim() === "" ? undefined : valor;
+
+      const dadosParaEnviar = {
+        name: dados.name.trim(),
+        email: dados.email.trim().toLowerCase(),
+        password: dados.password,
+        confirmPassword: dados.confirmPassword,
+        userType: dados.userType,
+        phone: formatarCampoOpcional(dados.phone),
+        experience:
+          dados.userType === TipoUsuario.CORRETOR
+            ? dados.experience
+            : undefined,
+        creci: formatarCampoOpcional(dados.creci),
+        cnpj: formatarCampoOpcional(dados.cnpj),
+        cpf: formatarCampoOpcional(dados.cpf),
+        companyName: formatarCampoOpcional(dados.companyName),
+        acceptTerms: dados.acceptTerms,
+      };
+
+      const result = await register(dadosParaEnviar);
+
+      if (result?.success) {
+        setRegisteredUser({
+          name: dados.name,
+          userType: dados.userType,
+        });
+        setSuccess(true);
+      } else {
+        // Se a API retornar erro, liberamos o botão para nova tentativa
         setEnviado(false);
-        console.error("Erro ao registrar:", error);
+        // O ideal aqui é que o hook ou um Toast mostre o erro retornado (result.error)
       }
+    } catch (error) {
+      setEnviado(false);
+      console.error("Erro crítico ao registrar:", error);
     }
   };
 
-  /**
-   * Renderiza campos condicionais baseados no tipo de usuário selecionado
-   * Cada tipo de usuário tem campos específicos obrigatórios
-   *
-   * @returns {JSX.Element | null} Campos condicionais ou null se não houver
-   */
-  const renderCampoCondicional = () => {
-    // Apenas corretores têm campo de experiência
-    if (dados.userType === TipoUsuario.CORRETOR) {
-      return (
-        <div className="mb-6">
-          <label className="block text-gray-700 font-medium mb-2">
-            Experiência no Mercado
-          </label>
-          <select
-            value={dados.experience || ""}
-            onChange={(e) =>
-              atualizarCampo("experience", e.target.value as NivelExperiencia)
-            }
-            className={`w-full p-3 border rounded-lg bg-white text-black ${
-              erros.experience
-                ? "border-red-500 focus:ring-red-200"
-                : "border-gray-300 focus:ring-blue-200"
-            } focus:outline-none focus:ring-2 focus:border-blue-500 transition-colors`}
-          >
-            <option value="">Selecione sua experiência</option>
-            <option value="less-1">Menos de 1 ano</option>
-            <option value="1-3">1-3 anos</option>
-            <option value="3-5">3-5 anos</option>
-            <option value="5-10">5-10 anos</option>
-            <option value="more-10">Mais de 10 anos</option>
-          </select>
-          {erros.experience && (
-            <p className="text-red-600 text-sm mt-1">{erros.experience}</p>
-          )}
-        </div>
-      );
-    }
+  const renderCamposCondicionais = () => {
+    // Verificação de segurança para o tipo de usuário
+    if (!dados.userType) return null;
 
-    return null;
+    return (
+      <div className="mb-6 space-y-4">
+        {/* CORRETOR */}
+        {dados.userType === TipoUsuario.CORRETOR && (
+          <>
+            <div className="mb-4">
+              {/* O htmlFor deve ser igual ao id do select */}
+              <label
+                htmlFor="experience-select"
+                className="block text-gray-700 font-medium mb-2"
+              >
+                Experiência no Mercado
+              </label>
+
+              <select
+                id="experience-select" // Adicione o ID aqui
+                value={dados.experience || ""}
+                onChange={(e) =>
+                  atualizarCampo(
+                    "experience",
+                    e.target.value as NivelExperiencia,
+                  )
+                }
+                className={`w-full p-3 border rounded-lg bg-white text-black transition-all ${
+                  erros.experience ? "border-red-500" : "border-gray-300"
+                }`}
+              >
+                <option value="">Selecione sua experiência</option>
+                {OPCOES_EXPERIENCIA.map((opcao) => (
+                  <option key={opcao.valor} value={opcao.valor}>
+                    {opcao.texto}
+                  </option>
+                ))}
+              </select>
+              {erros.experience && (
+                <p className="text-red-600 text-sm mt-1">{erros.experience}</p>
+              )}
+            </div>
+            <Input
+              label="Número do CRECI"
+              value={dados.creci || ""}
+              onChange={(value) => atualizarCampo("creci", value)}
+              placeholder="Ex: 123456"
+              error={erros.creci}
+            />
+          </>
+        )}
+
+        {/* EMPRESAS */}
+        {(dados.userType === TipoUsuario.IMOBILIARIA ||
+          dados.userType === TipoUsuario.INCORPORADORA) && (
+          <>
+            <Input
+              label="CNPJ"
+              value={dados.cnpj || ""}
+              onChange={(value) => atualizarCampo("cnpj", value)}
+              placeholder="00.000.000/0001-00"
+              error={erros.cnpj}
+            />
+            <Input
+              label="Razão Social"
+              value={dados.companyName || ""}
+              onChange={(value) => atualizarCampo("companyName", value)}
+              placeholder="Nome da empresa"
+              error={erros.companyName}
+            />
+          </>
+        )}
+
+        {/* PESSOA FÍSICA */}
+        {(dados.userType === TipoUsuario.CLIENTE ||
+          dados.userType === TipoUsuario.PROPRIETARIO) && (
+          <Input
+            label="CPF"
+            value={dados.cpf || ""}
+            onChange={(value) => atualizarCampo("cpf", value)}
+            placeholder="000.000.000-00"
+            error={erros.cpf}
+          />
+        )}
+      </div>
+    );
   };
 
-  // 🎉 RENDERIZAÇÃO CONDICIONAL - TELA DE SUCESSO
-  /**
-   * Exibe tela de confirmação após registro bem-sucedido
-   * Substitui o formulário por uma mensagem de sucesso
-   */
   if (success && registeredUser) {
-    const tipoTexto =
-      registeredUser.userType === TipoUsuario.CORRETOR ? "Corretor" : "Gestor";
+    const perfil = OPCOES_PERFIL.find(
+      (o) => o.valor === registeredUser.userType,
+    );
 
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-        <div className="bg-white p-8 sm:p-12 rounded-2xl shadow-2xl w-full max-w-md text-center">
+        <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md text-center">
           <div className="text-6xl mb-4">🎉</div>
           <h2 className="text-emerald-600 text-2xl font-bold mb-4">
-            Conta Criada com Sucesso!
+            Conta Criada!
           </h2>
-          <p className="text-gray-500 mb-8">
-            Bem-vindo(a) ao Dlogg LinkImobili,{" "}
-            <strong className="font-semibold">{registeredUser.name}</strong>!
+          <p className="text-gray-600 mb-6">
+            Bem-vindo, <strong>{registeredUser.name}</strong>.
           </p>
-
-          <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg mb-8">
-            <p className="text-emerald-800 text-sm m-0">
-              ✅ Sua conta como{" "}
-              <strong className="font-bold">{tipoTexto}</strong> foi criada com
-              sucesso!
-            </p>
+          <div className="p-4 bg-emerald-50 rounded-lg mb-8 text-sm text-emerald-800">
+            Conta de <strong>{perfil?.texto}</strong> ativada.
           </div>
-
           <Button
             onClick={() => window.location.reload()}
             variant="success"
-            className="w-full hover:scale-105 transition-transform duration-200"
+            className="w-full"
           >
-            Continuar para o Dashboard
+            Ir para Dashboard
           </Button>
         </div>
       </div>
     );
   }
 
-  // 📋 RENDERIZAÇÃO PRINCIPAL - FORMULÁRIO DE CADASTRO
-  /**
-   * Renderiza o formulário principal de registro
-   * Inclui todos os campos necessários e validação em tempo real
-   */
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg">
-        {/* CABEÇALHO */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            🏠 Criar Conta
-          </h1>
-          <p className="text-gray-600">Junte-se à nossa rede imobiliária</p>
+          <h1 className="text-3xl font-bold text-gray-800">🏠 Criar Conta</h1>
         </div>
 
-        {/* SELEÇÃO DE TIPO DE USUÁRIO */}
-        <div className="flex gap-2 mb-6 bg-gray-100 p-2 rounded-lg">
-          <button
-            type="button"
-            onClick={() => atualizarCampo("userType", TipoUsuario.CORRETOR)}
-            className={`flex-1 py-3 px-4 rounded-md font-medium transition-all duration-200 ${
-              dados.userType === TipoUsuario.CORRETOR
-                ? "bg-blue-600 text-white shadow-md"
-                : "bg-transparent text-gray-500 hover:bg-gray-200"
-            }`}
-          >
-            👨‍💼 Sou Corretor
-          </button>
-
-          <button
-            type="button"
-            onClick={() => atualizarCampo("userType", TipoUsuario.GESTOR)}
-            className={`flex-1 py-3 px-4 rounded-md font-medium transition-all duration-200 ${
-              dados.userType === TipoUsuario.GESTOR
-                ? "bg-blue-600 text-white shadow-md"
-                : "bg-transparent text-gray-500 hover:bg-gray-200"
-            }`}
-          >
-            👩‍💼 Sou Gestor
-          </button>
-        </div>
-
-        {/* FORMULÁRIO PRINCIPAL */}
-        <form onSubmit={handleSubmit}>
-          {/* SEÇÃO: INFORMAÇÕES PESSOAIS */}
-          <div className="mb-6">
-            <h3 className="text-gray-700 font-semibold mb-4">
-              Informações Pessoais
-            </h3>
-
-            <Input
-              label="Nome Completo"
-              value={dados.name}
-              onChange={(value) => atualizarCampo("name", value)}
-              placeholder="Seu nome completo"
-              required
-              error={erros.name}
-              className="mb-4"
-            />
-
-            <Input
-              label="Email"
-              type="email"
-              value={dados.email}
-              onChange={(value) => atualizarCampo("email", value)}
-              placeholder="seu@email.com"
-              required
-              error={erros.email}
-              className="mb-4"
-            />
-
-            <Input
-              label="Telefone"
-              value={dados.phone || ""}
-              onChange={(value) => atualizarCampo("phone", value)}
-              placeholder="(11) 99999-9999"
-              error={erros.phone}
-              className="mb-4"
-            />
-
-            {/* CAMPOS CONDICIONAIS */}
-            {renderCampoCondicional()}
+        <div className="mb-8">
+          <label className="block text-gray-700 font-medium mb-3">
+            Seu perfil
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {OPCOES_PERFIL.map((opcao) => (
+              <button
+                key={opcao.valor}
+                type="button"
+                onClick={() => atualizarCampo("userType", opcao.valor)}
+                className={`p-3 rounded-lg border-2 text-sm transition-all ${
+                  dados.userType === opcao.valor
+                    ? "border-blue-600 bg-blue-50 text-blue-700"
+                    : "border-gray-100 bg-gray-50 text-gray-500 hover:bg-gray-100"
+                }`}
+              >
+                <strong>{opcao.texto}</strong>
+              </button>
+            ))}
           </div>
+          {erros.userType && (
+            <p className="text-red-600 text-sm mt-2">{erros.userType}</p>
+          )}
+        </div>
 
-          {/* SEÇÃO: SEGURANÇA */}
-          <div className="mb-6">
-            <h3 className="text-gray-700 font-semibold mb-4">Segurança</h3>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            label="Nome"
+            value={dados.name}
+            onChange={(v) => atualizarCampo("name", v)}
+            error={erros.name}
+            required
+          />
+          <Input
+            label="Email"
+            type="email"
+            value={dados.email}
+            onChange={(v) => atualizarCampo("email", v)}
+            error={erros.email}
+            required
+          />
 
+          {renderCamposCondicionais()}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
               label="Senha"
               type="password"
               value={dados.password}
-              onChange={(value) => atualizarCampo("password", value)}
-              placeholder="Crie uma senha forte"
-              required
+              onChange={(v) => atualizarCampo("password", v)}
               error={erros.password}
-              className="mb-4"
+              required
             />
-
             <Input
-              label="Confirmar Senha"
+              label="Confirmar"
               type="password"
               value={dados.confirmPassword}
-              onChange={(value) => atualizarCampo("confirmPassword", value)}
-              placeholder="Digite a senha novamente"
-              required
+              onChange={(v) => atualizarCampo("confirmPassword", v)}
               error={erros.confirmPassword}
-              className="mb-4"
+              required
             />
-
-            {/* DICAS DE SEGURANÇA */}
-            <div className="p-3 bg-blue-50 border border-blue-100 rounded-lg text-xs text-blue-800">
-              <strong className="font-semibold">
-                Dicas para senha segura:
-              </strong>
-              <ul className="mt-2 ml-4 list-disc">
-                <li>Pelo menos 6 caracteres</li>
-                <li>Letras maiúsculas e minúsculas</li>
-                <li>Pelo menos um número</li>
-              </ul>
-            </div>
           </div>
 
-          {/* BOTÕES DE AÇÃO */}
-          <div className="flex gap-4 mb-4">
+          <label className="flex items-start gap-2 py-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={dados.acceptTerms || false}
+              onChange={(e) => atualizarCampo("acceptTerms", e.target.checked)}
+              className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600"
+            />
+            <span className="text-xs text-gray-600">
+              Li e aceito os{" "}
+              <a href="#" className="text-blue-600 underline">
+                Termos de Uso
+              </a>
+              .
+            </span>
+          </label>
+          {erros.acceptTerms && (
+            <p className="text-red-600 text-xs">{erros.acceptTerms}</p>
+          )}
+
+          <div className="flex gap-4 pt-4">
             <Button
               type="button"
               variant="secondary"
               onClick={onBack}
-              className="flex-1 hover:bg-gray-200 transition-colors"
+              className="flex-1"
             >
-              ← Voltar
+              Voltar
             </Button>
-
             <Button
               type="submit"
-              loading={enviado || loading}
-              className="flex-2 bg-blue-600 hover:bg-blue-700 active:scale-95 transition-all"
+              loading={enviado || authLoading}
+              disabled={enviado || authLoading}
+              className="flex-[2]"
             >
-              {enviado || loading ? "Criando conta..." : "Criar Conta"}
+              Criar Conta
             </Button>
           </div>
-
-          {/* TERMOS E CONDIÇÕES */}
-          <p className="text-center text-gray-500 text-sm">
-            Ao criar uma conta, você concorda com nossos{" "}
-            <a
-              href="#"
-              className="text-blue-600 hover:text-blue-800 hover:underline transition-colors"
-            >
-              Termos de Uso
-            </a>{" "}
-            e{" "}
-            <a
-              href="#"
-              className="text-blue-600 hover:text-blue-800 hover:underline transition-colors"
-            >
-              Política de Privacidade
-            </a>
-          </p>
         </form>
       </div>
     </div>
   );
 };
 
-/**
- * Exportação padrão do componente Register
- * @default
- */
 export default Register;

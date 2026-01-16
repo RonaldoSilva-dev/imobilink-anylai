@@ -10,6 +10,7 @@ interface ButtonProps {
   loading?: boolean;
   isDark?: boolean;
   style?: React.CSSProperties;
+  className?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -21,7 +22,7 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   loading = false,
   isDark = false,
-  style
+  style,
 }) => {
   const getVariantStyles = () => {
     switch (variant) {
@@ -29,31 +30,31 @@ const Button: React.FC<ButtonProps> = ({
         return {
           backgroundColor: isDark ? "#4f46e5" : "#3b82f6",
           color: "white",
-          hoverBackground: isDark ? "#4338ca" : "#2563eb"
+          hoverBackground: isDark ? "#4338ca" : "#2563eb",
         };
       case "secondary":
         return {
           backgroundColor: isDark ? "#6b7280" : "#9ca3af",
           color: "white",
-          hoverBackground: isDark ? "#4b5563" : "#6b7280"
+          hoverBackground: isDark ? "#4b5563" : "#6b7280",
         };
       case "danger":
         return {
           backgroundColor: isDark ? "#dc2626" : "#ef4444",
           color: "white",
-          hoverBackground: isDark ? "#b91c1c" : "#dc2626"
+          hoverBackground: isDark ? "#b91c1c" : "#dc2626",
         };
       case "success":
         return {
           backgroundColor: isDark ? "#059669" : "#10b981",
           color: "white",
-          hoverBackground: isDark ? "#047857" : "#059669"
+          hoverBackground: isDark ? "#047857" : "#059669",
         };
       default:
         return {
           backgroundColor: isDark ? "#4f46e5" : "#3b82f6",
           color: "white",
-          hoverBackground: isDark ? "#4338ca" : "#2563eb"
+          hoverBackground: isDark ? "#4338ca" : "#2563eb",
         };
     }
   };
@@ -65,19 +66,19 @@ const Button: React.FC<ButtonProps> = ({
         return {
           padding: "0.5rem 1rem",
           fontSize: "0.875rem",
-          minHeight: "36px"
+          minHeight: "36px",
         };
       case "large":
         return {
           padding: "1rem 2rem",
           fontSize: "1.125rem",
-          minHeight: "52px"
+          minHeight: "52px",
         };
       default: // medium
         return {
           padding: "0.75rem 1.5rem",
           fontSize: "1rem",
-          minHeight: "44px"
+          minHeight: "44px",
         };
     }
   };
@@ -107,7 +108,7 @@ const Button: React.FC<ButtonProps> = ({
         alignItems: "center",
         justifyContent: "center",
         gap: "0.5rem",
-        ...style
+        ...style,
       }}
       onMouseOver={(e) => {
         if (!disabled && !loading) {
@@ -121,17 +122,19 @@ const Button: React.FC<ButtonProps> = ({
       }}
     >
       {loading && (
-        <div style={{
-          width: "16px",
-          height: "16px",
-          border: "2px solid transparent",
-          borderTop: "2px solid currentColor",
-          borderRadius: "50%",
-          animation: "spin 1s linear infinite"
-        }} />
+        <div
+          style={{
+            width: "16px",
+            height: "16px",
+            border: "2px solid transparent",
+            borderTop: "2px solid currentColor",
+            borderRadius: "50%",
+            animation: "spin 1s linear infinite",
+          }}
+        />
       )}
       {children}
-      
+
       <style>
         {`
           @keyframes spin {
