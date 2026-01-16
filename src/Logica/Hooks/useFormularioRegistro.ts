@@ -1,22 +1,54 @@
+/**
+ * @file useFormularioRegistro.ts
+ * @description Hook personalizado para gerenciar o estado do formulário de registro
+ * Centraliza lógica de estado, validação e formatação dos dados de registro
+ * Compatível com IFormularioRegistro da pasta Tipos/Registro/
+ *
+ * @version 2.0.0
+ */
+
 import { useState, useCallback, useEffect } from "react";
 import {
   IFormularioRegistro,
   TipoUsuario,
+  NivelExperiencia,
+  TipoDocumento,
+  THookFormularioRegistro,
 } from "../../Tipos/Registro/TiposRegistro";
 import { validarFormulario } from "../Utilitarios/Validadores/validarFormularioRegistro";
 import { formatarTelefone } from "../Utilitarios/Formatadores/formatarTelefone";
 
 /**
+ * Estado inicial completo compatível com IFormularioRegistro
+ * Inclui todos os campos definidos na interface
+ * @constant
+ */
+const ESTADO_INICIAL: IFormularioRegistro = {
+  name: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  userType: TipoUsuario.CORRETOR,
+  phone: "",
+  experience: undefined,
+  creci: "",
+  cnpj: "",
+  cpf: "",
+  companyName: "",
+  stateRegistration: "",
+  website: "",
+  accessLevel: "",
+  documentType: undefined,
+  documentNumber: "",
+  acceptTerms: false,
+};
+
+/**
  * Hook personalizado para gerenciar o estado do formulário de registro.
+ * Compatível com todos os tipos definidos em Tipos/Registro/
+ * Implementa estado, validação, formatação e reset do formulário
  *
- * @returns {Object} Objeto contendo:
- * - dados: Estado atual do formulário
- * - erros: Erros de validação por campo
- * - enviado: Se o formulário foi submetido
- * - atualizarCampo: Função para atualizar um campo específico
- * - validar: Função para validar o formulário
- * - resetar: Função para resetar o formulário
- * - setEnviado: Função para marcar como enviado
+ * @returns {THookFormularioRegistro} Objeto contendo estado e funções do formulário
  *
  * @example
  * const { dados, erros, atualizarCampo, validar } = useFormularioRegistro();
@@ -30,50 +62,51 @@ import { formatarTelefone } from "../Utilitarios/Formatadores/formatarTelefone";
  * // Resetar formulário
  * resetar();
  */
-export function useFormularioRegistro() {
+export function useFormularioRegistro(): THookFormularioRegistro {
   /**
-   * Estado que armazena os dados do formulário.
+   * Estado que armazena os dados do formulário completo
    * @type {IFormularioRegistro}
    */
-  const [dados, setDados] = useState<IFormularioRegistro>({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    userType: TipoUsuario.CORRETOR, // Valor padrão: Corretor
-  });
+  const [dados, setDados] = useState<IFormularioRegistro>(ESTADO_INICIAL);
 
   /**
-   * Estado que armazena os erros de validação por campo.
+   * Estado que armazena os erros de validação por campo
    * @type {Record<string, string>}
    */
   const [erros, setErros] = useState<Record<string, string>>({});
 
   /**
-   * Estado que indica se o formulário foi submetido.
+   * Estado que indica se o formulário foi submetido
    * @type {boolean}
    */
   const [enviado, setEnviado] = useState(false);
 
   /**
-   * Atualiza um campo específico do formulário.
-   * Aplica formatação automática para campos como telefone.
-   * Limpa o erro do campo quando ele é editado.
+   * Atualiza um campo específico do formulário
+   * Suporta todos os tipos definidos em IFormularioRegistro
+   * Aplica formatação automática para campos como telefone
+   * Limpa o erro do campo quando ele é editado
    *
    * @param {keyof IFormularioRegistro} campo - Nome do campo a ser atualizado
-   * @param {string} valor - Novo valor do campo
+   * @param {string | boolean | NivelExperiencia | TipoUsuario | TipoDocumento} valor - Novo valor do campo
    *
    * @example
    * atualizarCampo('email', 'joao@email.com');
    * atualizarCampo('phone', '11999999999'); // Será formatado automaticamente
+   * atualizarCampo('acceptTerms', true);
+   * atualizarCampo('experience', NivelExperiencia.DE_1_A_3_ANOS);
+   * atualizarCampo('userType', TipoUsuario.IMOBILIARIA);
    */
   const atualizarCampo = useCallback(
-    (campo: keyof IFormularioRegistro, valor: string) => {
+    (
+      campo: keyof IFormularioRegistro,
+      valor: string | boolean | NivelExperiencia | TipoUsuario | TipoDocumento,
+    ) => {
       setDados((prev) => {
         const novosDados = { ...prev, [campo]: valor };
 
         // Formatação automática para telefone
-        if (campo === "phone" && valor) {
+        if (campo === "phone" && typeof valor === "string" && valor) {
           novosDados.phone = formatarTelefone(valor);
         }
 
@@ -89,8 +122,9 @@ export function useFormularioRegistro() {
   );
 
   /**
-   * Valida o formulário atual.
-   * Atualiza o estado de erros e retorna se o formulário é válido.
+   * Valida o formulário atual usando validarFormulario
+   * Atualiza o estado de erros e retorna se o formulário é válido
+   * Compatível com validações definidas para IFormularioRegistro
    *
    * @returns {boolean} true se o formulário é válido, false caso contrário
    *
@@ -107,26 +141,20 @@ export function useFormularioRegistro() {
   }, [dados]);
 
   /**
-   * Reseta o formulário para o estado inicial.
-   * Limpa todos os dados e erros.
+   * Reseta o formulário para o estado inicial completo
+   * Limpa todos os dados e erros
    *
    * @example
-   * resetar(); // Volta formulário para estado inicial
+   * resetar(); // Volta formulário para estado inicial completo
    */
   const resetar = useCallback(() => {
-    setDados({
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      userType: TipoUsuario.CORRETOR,
-    });
+    setDados(ESTADO_INICIAL);
     setErros({});
     setEnviado(false);
   }, []);
 
   return {
-    /** Dados atuais do formulário */
+    /** Dados atuais do formulário completo */
     dados,
     /** Erros de validação por campo */
     erros,
@@ -144,12 +172,13 @@ export function useFormularioRegistro() {
 }
 
 /**
- * Hook para gerenciar validação em tempo real de um campo.
- * Útil para mostrar erros enquanto o usuário digita.
+ * Hook para gerenciar validação em tempo real de um campo
+ * Útil para mostrar erros enquanto o usuário digita (debounce)
+ * Pode ser usado independentemente ou com useFormularioRegistro
  *
  * @param {string} valor - Valor atual do campo
  * @param {(valor: string) => string | null} validarCampo - Função de validação do campo
- * @param {number} [delay=500] - Delay em milissegundos para validação
+ * @param {number} [delay=500] - Delay em milissegundos para validação (debounce)
  *
  * @returns {Object} Objeto contendo:
  * - erro: Mensagem de erro atual (null se válido)
@@ -169,7 +198,11 @@ export function useValidacaoEmTempoReal(
   const [erro, setErro] = useState<string | null>(null);
   const [validando, setValidando] = useState(false);
 
-  // Efeito para validação com debounce
+  /**
+   * Efeito para validação com debounce
+   * Aplica delay para evitar validações a cada tecla pressionada
+   * Limpa timeout anterior se valor mudar antes do delay completar
+   */
   useEffect(() => {
     if (!valor.trim()) {
       setErro(null);
