@@ -28,16 +28,19 @@ const Register: React.FC<RegisterProps> = ({ onBack }) => {
     confirmPassword: "",
     userType: "corretor",
     phone: "",
-    experience: ""
+    experience: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [success, setSuccess] = useState(false);
-  const [registeredUser, setRegisteredUser] = useState<{name: string, userType: string} | null>(null);
+  const [registeredUser, setRegisteredUser] = useState<{
+    name: string;
+    userType: string;
+  } | null>(null);
 
   const handleChange = (field: keyof RegisterData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: "" }));
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
@@ -86,11 +89,11 @@ const Register: React.FC<RegisterProps> = ({ onBack }) => {
     }
 
     const result = await register(formData);
-    
+
     if (result.success) {
       setRegisteredUser({
         name: formData.name,
-        userType: formData.userType
+        userType: formData.userType,
       });
       setSuccess(true);
     } else {
@@ -99,52 +102,63 @@ const Register: React.FC<RegisterProps> = ({ onBack }) => {
   };
 
   const formatPhone = (value: string) => {
-    const numbers = value.replace(/\D/g, '');
+    const numbers = value.replace(/\D/g, "");
     if (numbers.length <= 10) {
-      return numbers.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+      return numbers.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
     } else {
-      return numbers.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+      return numbers.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
     }
   };
 
   if (success && registeredUser) {
     return (
-      <div style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#f5f5f5",
-        padding: "1rem"
-      }}>
-        <div style={{
-          backgroundColor: "#fff",
-          padding: "3rem 2rem",
-          borderRadius: "1rem",
-          boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-          width: "100%",
-          maxWidth: "400px",
-          textAlign: "center"
-        }}>
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#f5f5f5",
+          padding: "1rem",
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: "#fff",
+            padding: "3rem 2rem",
+            borderRadius: "1rem",
+            boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+            width: "100%",
+            maxWidth: "400px",
+            textAlign: "center",
+          }}
+        >
           <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>🎉</div>
           <h2 style={{ color: "#10b981", margin: "0 0 1rem 0" }}>
             Conta Criada com Sucesso!
           </h2>
           <p style={{ color: "#6b7280", marginBottom: "2rem" }}>
-            Bem-vindo(a) ao Dlogg LinkImobili, <strong>{registeredUser.name}</strong>!
+            Bem-vindo(a) ao Dlogg LinkImobili,{" "}
+            <strong>{registeredUser.name}</strong>!
           </p>
-          <div style={{
-            padding: "1rem",
-            backgroundColor: "#f0fdf4",
-            border: "1px solid #bbf7d0",
-            borderRadius: "0.5rem",
-            marginBottom: "2rem"
-          }}>
+          <div
+            style={{
+              padding: "1rem",
+              backgroundColor: "#f0fdf4",
+              border: "1px solid #bbf7d0",
+              borderRadius: "0.5rem",
+              marginBottom: "2rem",
+            }}
+          >
             <p style={{ color: "#065f46", margin: 0, fontSize: "0.875rem" }}>
-              ✅ Sua conta como <strong>{registeredUser.userType === "corretor" ? "Corretor" : "Gestor"}</strong> foi criada com sucesso!
+              ✅ Sua conta como{" "}
+              <strong>
+                {registeredUser.userType === "corretor" ? "Corretor" : "Gestor"}
+              </strong>{" "}
+              foi criada com sucesso!
             </p>
           </div>
-          <Button 
+          <Button
             onClick={() => window.location.reload()}
             variant="success"
             style={{ width: "100%" }}
@@ -157,22 +171,26 @@ const Register: React.FC<RegisterProps> = ({ onBack }) => {
   }
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: "#f5f5f5",
-      padding: "1rem"
-    }}>
-      <div style={{
-        backgroundColor: "#fff",
-        padding: "2rem",
-        borderRadius: "1rem",
-        boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-        width: "100%",
-        maxWidth: "450px"
-      }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#f5f5f5",
+        padding: "1rem",
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: "#fff",
+          padding: "2rem",
+          borderRadius: "1rem",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+          width: "100%",
+          maxWidth: "450px",
+        }}
+      >
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <h1 style={{ margin: "0 0 0.5rem 0", color: "#333" }}>
             🏠 Criar Conta
@@ -182,27 +200,30 @@ const Register: React.FC<RegisterProps> = ({ onBack }) => {
           </p>
         </div>
 
-        <div style={{ 
-          display: "flex", 
-          gap: "0.5rem", 
-          marginBottom: "1.5rem",
-          backgroundColor: "#f3f4f6",
-          padding: "0.5rem",
-          borderRadius: "0.5rem"
-        }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "0.5rem",
+            marginBottom: "1.5rem",
+            backgroundColor: "#f3f4f6",
+            padding: "0.5rem",
+            borderRadius: "0.5rem",
+          }}
+        >
           <button
             type="button"
             onClick={() => handleChange("userType", "corretor")}
             style={{
               flex: 1,
               padding: "0.75rem",
-              backgroundColor: formData.userType === "corretor" ? "#3b82f6" : "transparent",
+              backgroundColor:
+                formData.userType === "corretor" ? "#3b82f6" : "transparent",
               color: formData.userType === "corretor" ? "white" : "#6b7280",
               border: "none",
               borderRadius: "0.375rem",
               cursor: "pointer",
               fontWeight: "500",
-              transition: "all 0.2s ease"
+              transition: "all 0.2s ease",
             }}
           >
             👨‍💼 Sou Corretor
@@ -213,13 +234,14 @@ const Register: React.FC<RegisterProps> = ({ onBack }) => {
             style={{
               flex: 1,
               padding: "0.75rem",
-              backgroundColor: formData.userType === "gestor" ? "#3b82f6" : "transparent",
+              backgroundColor:
+                formData.userType === "gestor" ? "#3b82f6" : "transparent",
               color: formData.userType === "gestor" ? "white" : "#6b7280",
               border: "none",
               borderRadius: "0.375rem",
               cursor: "pointer",
               fontWeight: "500",
-              transition: "all 0.2s ease"
+              transition: "all 0.2s ease",
             }}
           >
             👩‍💼 Sou Gestor
@@ -228,10 +250,16 @@ const Register: React.FC<RegisterProps> = ({ onBack }) => {
 
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: "1.5rem" }}>
-            <h3 style={{ color: "#374151", margin: "0 0 1rem 0", fontSize: "1rem" }}>
+            <h3
+              style={{
+                color: "#374151",
+                margin: "0 0 1rem 0",
+                fontSize: "1rem",
+              }}
+            >
               Informações Pessoais
             </h3>
-            
+
             <Input
               label="Nome Completo"
               value={formData.name}
@@ -261,12 +289,14 @@ const Register: React.FC<RegisterProps> = ({ onBack }) => {
 
             {formData.userType === "corretor" && (
               <div style={{ marginBottom: "1.5rem" }}>
-                <label style={{
-                  display: "block",
-                  marginBottom: "0.5rem",
-                  fontWeight: "500",
-                  color: "#374151"
-                }}>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: "0.5rem",
+                    fontWeight: "500",
+                    color: "#374151",
+                  }}
+                >
                   Experiência no Mercado
                 </label>
                 <select
@@ -275,11 +305,13 @@ const Register: React.FC<RegisterProps> = ({ onBack }) => {
                   style={{
                     width: "100%",
                     padding: "0.75rem",
-                    border: errors.experience ? "1px solid #ef4444" : "1px solid #d1d5db",
+                    border: errors.experience
+                      ? "1px solid #ef4444"
+                      : "1px solid #d1d5db",
                     borderRadius: "0.375rem",
                     backgroundColor: "#fff",
                     color: "#000",
-                    fontSize: "1rem"
+                    fontSize: "1rem",
                   }}
                 >
                   <option value="">Selecione sua experiência</option>
@@ -290,7 +322,13 @@ const Register: React.FC<RegisterProps> = ({ onBack }) => {
                   <option value="more-10">Mais de 10 anos</option>
                 </select>
                 {errors.experience && (
-                  <p style={{ color: "#ef4444", fontSize: "0.875rem", margin: "0.25rem 0 0 0" }}>
+                  <p
+                    style={{
+                      color: "#ef4444",
+                      fontSize: "0.875rem",
+                      margin: "0.25rem 0 0 0",
+                    }}
+                  >
                     {errors.experience}
                   </p>
                 )}
@@ -299,7 +337,13 @@ const Register: React.FC<RegisterProps> = ({ onBack }) => {
           </div>
 
           <div style={{ marginBottom: "1.5rem" }}>
-            <h3 style={{ color: "#374151", margin: "0 0 1rem 0", fontSize: "1rem" }}>
+            <h3
+              style={{
+                color: "#374151",
+                margin: "0 0 1rem 0",
+                fontSize: "1rem",
+              }}
+            >
               Segurança
             </h3>
 
@@ -323,14 +367,16 @@ const Register: React.FC<RegisterProps> = ({ onBack }) => {
               error={errors.confirmPassword}
             />
 
-            <div style={{
-              padding: "0.75rem",
-              backgroundColor: "#f8fafc",
-              border: "1px solid #e2e8f0",
-              borderRadius: "0.375rem",
-              fontSize: "0.75rem",
-              color: "#64748b"
-            }}>
+            <div
+              style={{
+                padding: "0.75rem",
+                backgroundColor: "#f8fafc",
+                border: "1px solid #e2e8f0",
+                borderRadius: "0.375rem",
+                fontSize: "0.75rem",
+                color: "#64748b",
+              }}
+            >
               <strong>Dicas para senha segura:</strong>
               <ul style={{ margin: "0.5rem 0 0 0", paddingLeft: "1rem" }}>
                 <li>Pelo menos 6 caracteres</li>
@@ -341,15 +387,17 @@ const Register: React.FC<RegisterProps> = ({ onBack }) => {
           </div>
 
           {errors.general && (
-            <div style={{
-              padding: "0.75rem",
-              backgroundColor: "#fef2f2",
-              border: "1px solid #fecaca",
-              borderRadius: "0.375rem",
-              color: "#dc2626",
-              marginBottom: "1rem",
-              fontSize: "0.875rem"
-            }}>
+            <div
+              style={{
+                padding: "0.75rem",
+                backgroundColor: "#fef2f2",
+                border: "1px solid #fecaca",
+                borderRadius: "0.375rem",
+                color: "#dc2626",
+                marginBottom: "1rem",
+                fontSize: "0.875rem",
+              }}
+            >
               {errors.general}
             </div>
           )}
@@ -363,21 +411,23 @@ const Register: React.FC<RegisterProps> = ({ onBack }) => {
             >
               ← Voltar
             </Button>
-            <Button
-              type="submit"
-              loading={loading}
-              style={{ flex: 2 }}
-            >
+            <Button type="submit" loading={loading} style={{ flex: 2 }}>
               {loading ? "Criando conta..." : "Criar Conta"}
             </Button>
           </div>
 
-          <p style={{ textAlign: "center", color: "#6b7280", fontSize: "0.875rem" }}>
-            Ao criar uma conta, você concorda com nossos{' '}
+          <p
+            style={{
+              textAlign: "center",
+              color: "#6b7280",
+              fontSize: "0.875rem",
+            }}
+          >
+            Ao criar uma conta, você concorda com nossos{" "}
             <a href="#" style={{ color: "#3b82f6", textDecoration: "none" }}>
               Termos de Uso
-            </a>{' '}
-            e{' '}
+            </a>{" "}
+            e{" "}
             <a href="#" style={{ color: "#3b82f6", textDecoration: "none" }}>
               Política de Privacidade
             </a>
