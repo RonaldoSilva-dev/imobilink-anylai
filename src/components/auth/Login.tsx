@@ -1,16 +1,23 @@
 import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useLoading } from "../../contexts/LoadingContext";
+
+// Componentes Reutilizáveis
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import Register from "./Register";
 
+// Tipos oficiais do projeto
+import { TipoUsuario } from "../../Tipos/Registro/TiposRegistro";
+
 const Login: React.FC = () => {
   const { login } = useAuth();
-  const { loading } = useLoading();
+  const { loading: authLoading } = useLoading();
+
+  // Estados do formulário
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userType, setUserType] = useState<"corretor" | "gestor">("corretor");
+  const [userType, setUserType] = useState<TipoUsuario>(TipoUsuario.CORRETOR);
   const [errors, setErrors] = useState<{
     email?: string;
     password?: string;
@@ -22,80 +29,49 @@ const Login: React.FC = () => {
     e.preventDefault();
     setErrors({});
 
-    const result = await login(email, password, userType);
+    try {
+      // O método login deve esperar o TipoUsuario agora
+      const result = await login(email, password, userType);
 
-    if (!result.success) {
-      setErrors({ general: result.error });
+      if (!result.success) {
+        setErrors({ general: result.error || "Falha na autenticação" });
+      }
+    } catch (error) {
+      setErrors({ general: "Ocorreu um erro inesperado ao entrar." });
     }
   };
 
-  const clearErrors = () => {
-    setErrors({});
-  };
+  const clearErrors = () => setErrors({});
 
-  // Se estiver na aba de registro, mostrar o componente Register
+  // Troca de tela para Registro
   if (activeTab === "register") {
     return <Register onBack={() => setActiveTab("login")} />;
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#f5f5f5",
-        padding: "1rem",
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: "#fff",
-          padding: "2rem",
-          borderRadius: "1rem",
-          boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-          width: "100%",
-          maxWidth: "400px",
-        }}
-      >
-        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <h1 style={{ margin: "0 0 0.5rem 0", color: "#333" }}>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+        {/* CABEÇALHO */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">
             🏠 Imobilink-Anylai
           </h1>
-          <p style={{ color: "#666", margin: 0 }}>
-            Sua rede imobiliária inteligente
-          </p>
+          <p className="text-gray-500">Sua rede imobiliária inteligente</p>
         </div>
 
-        {/* Tabs Login/Registro */}
-        <div
-          style={{
-            display: "flex",
-            marginBottom: "1.5rem",
-            backgroundColor: "#f3f4f6",
-            padding: "0.25rem",
-            borderRadius: "0.5rem",
-          }}
-        >
+        {/* NAVEGAÇÃO ENTRE LOGIN / CADASTRO */}
+        <div className="flex mb-6 bg-gray-100 p-1 rounded-xl">
           <button
             type="button"
             onClick={() => {
               setActiveTab("login");
               clearErrors();
             }}
-            style={{
-              flex: 1,
-              padding: "0.75rem",
-              backgroundColor:
-                activeTab === "login" ? "#3b82f6" : "transparent",
-              color: activeTab === "login" ? "white" : "#6b7280",
-              border: "none",
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-              fontWeight: "500",
-              transition: "all 0.2s ease",
-            }}
+            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
+              activeTab === "login"
+                ? "bg-white shadow-sm text-blue-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
           >
             Entrar
           </button>
@@ -105,80 +81,50 @@ const Login: React.FC = () => {
               setActiveTab("register");
               clearErrors();
             }}
-            style={{
-              flex: 1,
-              padding: "0.75rem",
-              backgroundColor:
-                activeTab === "register" ? "#3b82f6" : "transparent",
-              color: activeTab === "register" ? "white" : "#6b7280",
-              border: "none",
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-              fontWeight: "500",
-              transition: "all 0.2s ease",
-            }}
+            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
+              activeTab === "login"
+                ? "bg-white shadow-sm text-blue-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
           >
             Cadastrar
           </button>
         </div>
 
-        {/* Seletor de Tipo de Usuário */}
-        <div
-          style={{
-            display: "flex",
-            gap: "0.5rem",
-            marginBottom: "1.5rem",
-            backgroundColor: "#f3f4f6",
-            padding: "0.5rem",
-            borderRadius: "0.5rem",
-          }}
-        >
+        {/* SELETOR DE PERFIL (Para Login) */}
+        <div className="grid grid-cols-2 gap-2 mb-6">
           <button
             type="button"
-            onClick={() => setUserType("corretor")}
-            style={{
-              flex: 1,
-              padding: "0.75rem",
-              backgroundColor:
-                userType === "corretor" ? "#3b82f6" : "transparent",
-              color: userType === "corretor" ? "white" : "#6b7280",
-              border: "none",
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-              fontWeight: "500",
-              transition: "all 0.2s ease",
-            }}
+            onClick={() => setUserType(TipoUsuario.CORRETOR)}
+            className={`py-3 rounded-lg border-2 transition-all ${
+              userType === TipoUsuario.CORRETOR
+                ? "border-blue-600 bg-blue-50 text-blue-700"
+                : "border-transparent bg-gray-50 text-gray-500"
+            }`}
           >
             👨‍💼 Corretor
           </button>
           <button
             type="button"
-            onClick={() => setUserType("gestor")}
-            style={{
-              flex: 1,
-              padding: "0.75rem",
-              backgroundColor:
-                userType === "gestor" ? "#3b82f6" : "transparent",
-              color: userType === "gestor" ? "white" : "#6b7280",
-              border: "none",
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-              fontWeight: "500",
-              transition: "all 0.2s ease",
-            }}
+            onClick={() => setUserType(TipoUsuario.IMOBILIARIA)} // Ajustado para TipoUsuario
+            className={`py-3 rounded-lg border-2 transition-all ${
+              userType === TipoUsuario.IMOBILIARIA
+                ? "border-blue-600 bg-blue-50 text-blue-700"
+                : "border-transparent bg-gray-50 text-gray-500"
+            }`}
           >
-            👩‍💼 Gestor
+            🏢 Imobiliária
           </button>
         </div>
 
-        {/* Formulário de Login */}
-        <form onSubmit={handleLogin}>
+        {/* FORMULÁRIO */}
+        <form onSubmit={handleLogin} className="space-y-4">
           <Input
             label="Email"
             type="email"
             value={email}
-            onChange={(value) => {
-              setEmail(value);
+            onChange={(val) => {
+              setEmail(val);
               clearErrors();
             }}
             placeholder="seu@email.com"
@@ -190,8 +136,8 @@ const Login: React.FC = () => {
             label="Senha"
             type="password"
             value={password}
-            onChange={(value) => {
-              setPassword(value);
+            onChange={(val) => {
+              setPassword(val);
               clearErrors();
             }}
             placeholder="Sua senha"
@@ -200,34 +146,24 @@ const Login: React.FC = () => {
           />
 
           {errors.general && (
-            <div
-              style={{
-                padding: "0.75rem",
-                backgroundColor: "#fef2f2",
-                border: "1px solid #fecaca",
-                borderRadius: "0.375rem",
-                color: "#dc2626",
-                marginBottom: "1rem",
-                fontSize: "0.875rem",
-              }}
-            >
+            <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
               {errors.general}
             </div>
           )}
 
-          <div
-            style={{
-              fontSize: "0.875rem",
-              color: "#6b7280",
-              marginBottom: "1rem",
-            }}
-          >
-            <strong>Demo:</strong> Use "corretor@exemplo.com" ou
-            "gestor@exemplo.com" com senha "123456"
+          {/* DICA DE DEMO */}
+          <div className="text-xs text-gray-400 bg-gray-50 p-2 rounded border border-dashed border-gray-200">
+            <strong>Dica:</strong> Use o email correspondente ao perfil
+            selecionado (senha: 123456).
           </div>
 
-          <Button type="submit" loading={loading} style={{ width: "100%" }}>
-            {loading ? "Entrando..." : "Entrar"}
+          <Button
+            type="submit"
+            loading={authLoading}
+            className="w-full py-3"
+            variant="primary" // Adicionado variant para consistência
+          >
+            {authLoading ? "Entrando..." : "Entrar na Conta"}
           </Button>
         </form>
       </div>
