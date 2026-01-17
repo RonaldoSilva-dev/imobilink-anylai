@@ -1,5 +1,5 @@
 // Dashboard temporário para Gestor
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../contexts/AuthContext";
 const GestorDashboard: React.FC = () => {
   const { user, logout } = useAuth();
 
@@ -26,3 +26,4 @@ const GestorDashboard: React.FC = () => {
     </div>
   );
 };
+export default GestorDashboard;
