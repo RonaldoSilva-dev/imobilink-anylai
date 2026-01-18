@@ -7,6 +7,7 @@ import { HeaderCorretorDashboard } from "./HeaderCorretorDashboard";
 import { WelcomeSection } from "./WelcomeSection";
 import { DashboardTabs, type DashboardTab } from "./DashboardTabs";
 import { FeaturePlaceholder } from "./FeaturePlaceholder";
+import { QuickActions } from "./QuickActions";
 
 type DashboardView = "main" | "profile";
 
@@ -276,7 +277,6 @@ const CorretorDashboard: React.FC = () => {
                 </div>
               </div>
             </div>
-
             {/* Seção de Matches Recentes */}
             <div className="bg-white p-4 md:p-8 rounded-2xl shadow-sm border border-gray-200 mb-6 md:mb-8">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4 mb-4 md:mb-6">
@@ -384,39 +384,7 @@ const CorretorDashboard: React.FC = () => {
                 ))}
               </div>
             </div>
-
-            {/* Ações Rápidas */}
-            <div className="bg-white p-4 md:p-8 rounded-2xl shadow-sm border border-gray-200">
-              <h2 className="text-gray-800 text-lg md:text-xl font-semibold mb-4 md:mb-6">
-                🚀 Ações Rápidas
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-                <Button
-                  variant="primary"
-                  className="justify-center text-sm md:text-base"
-                >
-                  📋 Cadastrar Imóvel
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="justify-center text-sm md:text-base"
-                >
-                  👥 Novo Cliente
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="justify-center text-sm md:text-base"
-                >
-                  🤝 Buscar Matches
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="justify-center text-sm md:text-base"
-                >
-                  📊 Gerar Relatório
-                </Button>
-              </div>
-            </div>
+            <QuickActions />
           </div>
         )}
         {/* Aba Matches */}
