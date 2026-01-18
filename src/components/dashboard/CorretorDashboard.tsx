@@ -8,6 +8,7 @@ import { WelcomeSection } from "./WelcomeSection";
 import { DashboardTabs, type DashboardTab } from "./DashboardTabs";
 import { FeaturePlaceholder } from "./FeaturePlaceholder";
 import { QuickActions } from "./QuickActions";
+import { StatsCard } from "./StatsCard";
 
 type DashboardView = "main" | "profile";
 
@@ -221,61 +222,37 @@ const CorretorDashboard: React.FC = () => {
             {/* Stats Grid - Métricas Principais */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {/* Card Total Matches */}
-              <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 text-center">
-                <div className="text-3xl md:text-4xl mb-2">🤝</div>
-                <h3 className="text-gray-900 font-medium mb-1 text-sm md:text-base">
-                  Total Matches
-                </h3>
-                <p className="text-gray-500 text-xs md:text-sm mb-2">
-                  {metricas.matchesAtivos} ativos • {metricas.matchesPendentes}{" "}
-                  pendentes
-                </p>
-                <div className="text-3xl md:text-4xl font-bold text-blue-600">
-                  {metricas.totalMatches}
-                </div>
-              </div>
-
+              <StatsCard
+                icon="🤝"
+                title="Total Matches"
+                description={`${metricas.matchesAtivos} ativos • ${metricas.matchesPendentes} pendentes`}
+                value={metricas.totalMatches}
+                variant="blue"
+              />
               {/* Card Imóveis Cadastrados */}
-              <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 text-center">
-                <div className="text-3xl md:text-4xl mb-2">🏠</div>
-                <h3 className="text-gray-900 font-medium mb-1 text-sm md:text-base">
-                  Imóveis
-                </h3>
-                <p className="text-gray-500 text-xs md:text-sm mb-2">
-                  Cadastrados no portfólio
-                </p>
-                <div className="text-3xl md:text-4xl font-bold text-emerald-600">
-                  {metricas.imoveisCadastrados}
-                </div>
-              </div>
-
+              <StatsCard
+                icon="🏠"
+                title="Imóveis"
+                description="Cadastrados no portifólio"
+                value={metricas.imoveisCadastrados}
+                variant="emerald"
+              />
               {/* Card Clientes Ativos */}
-              <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 text-center">
-                <div className="text-3xl md:text-4xl mb-2">👥</div>
-                <h3 className="text-gray-900 font-medium mb-1 text-sm md:text-base">
-                  Clientes
-                </h3>
-                <p className="text-gray-500 text-xs md:text-sm mb-2">
-                  Ativos no sistema
-                </p>
-                <div className="text-3xl md:text-4xl font-bold text-amber-600">
-                  {metricas.clientesAtivos}
-                </div>
-              </div>
-
+              <StatsCard
+                icon="👥"
+                title="Clientes"
+                description="Ativos no sistema"
+                value={metricas.clientesAtivos}
+                variant="amber"
+              />
               {/* Card Avaliação Média */}
-              <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 text-center">
-                <div className="text-3xl md:text-4xl mb-2">⭐</div>
-                <h3 className="text-gray-900 font-medium mb-1 text-sm md:text-base">
-                  Avaliação
-                </h3>
-                <p className="text-gray-500 text-xs md:text-sm mb-2">
-                  Média de satisfação
-                </p>
-                <div className="text-3xl md:text-4xl font-bold text-purple-600">
-                  {metricas.avaliacaoMedia}/5
-                </div>
-              </div>
+              <StatsCard
+                icon="⭐"
+                title="Avaliação"
+                description="Média de satisfação"
+                value={metricas.avaliacaoMedia.toFixed(1)}
+                variant="purple"
+              />
             </div>
             {/* Seção de Matches Recentes */}
             <div className="bg-white p-4 md:p-8 rounded-2xl shadow-sm border border-gray-200 mb-6 md:mb-8">
