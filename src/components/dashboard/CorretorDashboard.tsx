@@ -4,6 +4,7 @@ import { useLoading } from "../../contexts/LoadingContext";
 import Button from "../common/Button";
 import CorretorProfile from "../profile/CorretorProfile";
 import { HeaderCorretorDashboard } from "./HeaderCorretorDashboard";
+import { WelcomeSection } from "./WelcomeSection";
 
 type DashboardView = "main" | "profile";
 
@@ -208,30 +209,10 @@ const CorretorDashboard: React.FC = () => {
       <HeaderCorretorDashboard onLogout={logout} />
       {/* Main Content */}
       <main className="p-4 md:p-8 max-w-7xl mx-auto">
-        {/* Welcome Section */}
-        <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200 mb-6 md:mb-8">
-          <h2 className="text-gray-900 text-xl md:text-2xl font-semibold mb-3 md:mb-4">
-            👋 Bem-vindo, {user?.name}!
-          </h2>
-          <p className="text-gray-600 text-base md:text-lg mb-4 md:mb-6">
-            Sua jornada no Dlogg LinkImobili começa aqui. Encontre os melhores
-            empreendimentos e faça matches com construtoras que combinam com seu
-            perfil.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Button
-              variant="primary"
-              onClick={() => setCurrentView("profile")}
-              className="flex items-center gap-2"
-            >
-              👤 Completar Meu Perfil
-            </Button>
-            <Button variant="secondary" className="flex items-center gap-2">
-              💼 Buscar Empreendimentos
-            </Button>
-          </div>
-        </div>
-
+        <WelcomeSection
+          userName={user?.name}
+          onProfileClick={() => setCurrentView("profile")}
+        />
         {/* Navegação por Abas */}
         <div className="flex flex-wrap gap-2 md:gap-3 mb-6 md:mb-8 border-b border-gray-200 pb-3 md:pb-4">
           {[
