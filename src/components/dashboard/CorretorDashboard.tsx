@@ -9,25 +9,9 @@ import { DashboardTabs, type DashboardTab } from "./DashboardTabs";
 import { FeaturePlaceholder } from "./FeaturePlaceholder";
 import { QuickActions } from "./QuickActions";
 import { StatsCard } from "./StatsCard";
+import MatchCard, { EmpresaMatch } from "./MatchCard";
 
 type DashboardView = "main" | "profile";
-
-// Interfaces para o sistema de match
-interface EmpresaMatch {
-  id: string;
-  nome: string;
-  tipo: "imobiliaria" | "construtora";
-  cidade: string;
-  estado: string;
-  especialidades: string[];
-  avaliacao: number;
-  totalAvaliacoes: number;
-  fotoUrl: string;
-  matchScore: number;
-  status: "pendente" | "ativo" | "recusado" | "desativado";
-  dataMatch: string;
-  ultimaInteracao: string;
-}
 
 interface MetricasDashboard {
   totalMatches: number;
@@ -62,6 +46,59 @@ const CorretorDashboard: React.FC = () => {
     console.log("Voltando para o dashboard");
     setCurrentView("main");
   };
+
+  // Aceitar match
+  const aceitarMatch = (matchId: string) => {
+    setMatches((prev) =>
+      prev.map((match) =>
+        match.id === matchId ? { ...match, status: "ativo" } : match,
+      ),
+    );
+    console.log(`✅ Match aceito: ${matchId}`);
+  };
+
+  // Recusar match
+  const recusarMatch = (matchId: string) => {
+    setMatches((prev) =>
+      prev.map((match) =>
+        match.id === matchId ? { ...match, status: "recusado" } : match,
+      ),
+    );
+    console.log(`❌ Match recusado: ${matchId}`);
+  };
+
+  // Desativar match (remover match ativo)
+  const desativarMatch = (matchId: string) => {
+    setMatches((prev) =>
+      prev.map((match) =>
+        match.id === matchId ? { ...match, status: "desativado" } : match,
+      ),
+    );
+    console.log(`🔴 Match desativado: ${matchId}`);
+  };
+
+  // Reativar match
+  const reativarMatch = (matchId: string) => {
+    setMatches((prev) =>
+      prev.map((match) =>
+        match.id === matchId ? { ...match, status: "ativo" } : match,
+      ),
+    );
+    console.log(`↻ Match reativado: ${matchId}`);
+  };
+
+  // Abrir chat
+  const abrirChat = (matchId: string) => {
+    console.log(`💬 Abrir chat com match: ${matchId}`);
+    // Aqui você pode implementar a lógica para abrir o chat
+    // Por exemplo: setCurrentChatId(matchId), navegar para página de chat, etc.
+  };
+
+  // Filtrar matches por status
+  const matchesAtivos = matches.filter((match) => match.status === "ativo");
+  const matchesPendentes = matches.filter(
+    (match) => match.status === "pendente",
+  );
 
   // Carregar dados do dashboard
   useEffect(() => {
@@ -143,6 +180,36 @@ const CorretorDashboard: React.FC = () => {
           dataMatch: "2024-01-05",
           ultimaInteracao: "2024-01-19",
         },
+        {
+          id: "5",
+          nome: "Imobiliária Delta",
+          tipo: "imobiliaria",
+          cidade: "Porto Alegre",
+          estado: "RS",
+          especialidades: ["Luxo", "Alto Padrão"],
+          avaliacao: 4.9,
+          totalAvaliacoes: 203,
+          fotoUrl: "",
+          matchScore: 95,
+          status: "desativado",
+          dataMatch: "2023-12-10",
+          ultimaInteracao: "2024-01-05",
+        },
+        {
+          id: "6",
+          nome: "Construtora Omega",
+          tipo: "construtora",
+          cidade: "Salvador",
+          estado: "BA",
+          especialidades: ["Popular", "MCMV"],
+          avaliacao: 4.3,
+          totalAvaliacoes: 78,
+          fotoUrl: "",
+          matchScore: 72,
+          status: "recusado",
+          dataMatch: "2024-01-18",
+          ultimaInteracao: "2024-01-18",
+        },
       ];
 
       setMetricas(mockMetricas);
@@ -154,42 +221,6 @@ const CorretorDashboard: React.FC = () => {
       loadDashboardData();
     }
   }, [setLoading, currentView]);
-
-  // Aceitar match
-  const aceitarMatch = (matchId: string) => {
-    setMatches((prev) =>
-      prev.map((match) =>
-        match.id === matchId ? { ...match, status: "ativo" } : match,
-      ),
-    );
-    console.log(`✅ Match aceito: ${matchId}`);
-  };
-
-  // Recusar match
-  const recusarMatch = (matchId: string) => {
-    setMatches((prev) =>
-      prev.map((match) =>
-        match.id === matchId ? { ...match, status: "recusado" } : match,
-      ),
-    );
-    console.log(`❌ Match recusado: ${matchId}`);
-  };
-
-  // Desativar match (remover match ativo)
-  const desativarMatch = (matchId: string) => {
-    setMatches((prev) =>
-      prev.map((match) =>
-        match.id === matchId ? { ...match, status: "desativado" } : match,
-      ),
-    );
-    console.log(`🔴 Match desativado: ${matchId}`);
-  };
-
-  // Filtrar matches por status
-  const matchesAtivos = matches.filter((match) => match.status === "ativo");
-  const matchesPendentes = matches.filter(
-    (match) => match.status === "pendente",
-  );
 
   // Se a view atual for profile, mostrar o componente de perfil
   if (currentView === "profile") {
@@ -216,6 +247,7 @@ const CorretorDashboard: React.FC = () => {
           onProfileClick={() => setCurrentView("profile")}
         />
         <DashboardTabs activeTab={abaAtiva} onTabChange={setAbaAtiva} />
+
         {/* Conteúdo das Abas */}
         {abaAtiva === "overview" && (
           <div className="space-y-6 md:space-y-8">
@@ -254,6 +286,7 @@ const CorretorDashboard: React.FC = () => {
                 variant="purple"
               />
             </div>
+
             {/* Seção de Matches Recentes */}
             <div className="bg-white p-4 md:p-8 rounded-2xl shadow-sm border border-gray-200 mb-6 md:mb-8">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4 mb-4 md:mb-6">
@@ -272,101 +305,28 @@ const CorretorDashboard: React.FC = () => {
 
               <div className="space-y-3 md:space-y-4">
                 {matches.slice(0, 3).map((match) => (
-                  <div
+                  <MatchCard
                     key={match.id}
-                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4 p-3 md:p-4 bg-gray-50 rounded-xl border border-gray-200"
-                  >
-                    <div className="flex items-start gap-3 md:gap-4">
-                      <div
-                        className={`
-                          p-2 md:p-3 rounded-lg text-xl md:text-2xl
-                          ${
-                            match.tipo === "imobiliaria"
-                              ? "bg-blue-50"
-                              : "bg-emerald-50"
-                          }
-                        `}
-                      >
-                        {match.tipo === "imobiliaria" ? "🏢" : "🏗️"}
-                      </div>
-                      <div>
-                        <h4 className="text-gray-800 font-medium mb-1 text-sm md:text-base">
-                          {match.nome}
-                        </h4>
-                        <p className="text-gray-500 text-xs md:text-sm">
-                          {match.cidade} - {match.estado} •{" "}
-                          {match.especialidades.join(", ")}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4 mt-2 sm:mt-0">
-                      <div className="text-right">
-                        <div
-                          className={`
-                            px-2 md:px-3 py-1 rounded-full text-xs font-medium
-                            ${
-                              match.status === "ativo"
-                                ? "bg-emerald-100 text-emerald-800"
-                                : match.status === "pendente"
-                                  ? "bg-amber-100 text-amber-800"
-                                  : "bg-red-100 text-red-800"
-                            }
-                          `}
-                        >
-                          {match.status === "ativo"
-                            ? "Ativo"
-                            : match.status === "pendente"
-                              ? "Pendente"
-                              : "Recusado"}
-                        </div>
-                        <div className="text-xs text-gray-500 mt-1">
-                          Match: {match.matchScore}%
-                        </div>
-                      </div>
-
-                      {match.status === "pendente" && (
-                        <div className="flex gap-2">
-                          <Button
-                            onClick={() => aceitarMatch(match.id)}
-                            variant="success"
-                            size="small"
-                            className="px-2 py-1 text-xs"
-                          >
-                            ✓
-                          </Button>
-                          <Button
-                            onClick={() => recusarMatch(match.id)}
-                            variant="danger"
-                            size="small"
-                            className="px-2 py-1 text-xs"
-                          >
-                            ×
-                          </Button>
-                        </div>
-                      )}
-
-                      {match.status === "ativo" && (
-                        <Button
-                          onClick={() => desativarMatch(match.id)}
-                          variant="secondary"
-                          size="small"
-                          className="text-xs"
-                        >
-                          Desativar
-                        </Button>
-                      )}
-                    </div>
-                  </div>
+                    match={match}
+                    compact={true}
+                    showActions={true}
+                    onAccept={aceitarMatch}
+                    onDecline={recusarMatch}
+                    onDeactivate={desativarMatch}
+                    onReactivate={reativarMatch}
+                    onChat={abrirChat}
+                  />
                 ))}
               </div>
             </div>
+
             <QuickActions />
           </div>
         )}
+
         {/* Aba Matches */}
         {abaAtiva === "matches" && (
-          <div>
+          <div className="space-y-6 md:space-y-8">
             <div className="bg-white p-4 md:p-8 rounded-2xl shadow-sm border border-gray-200">
               <h2 className="text-gray-800 text-lg md:text-2xl font-semibold mb-4 md:mb-6">
                 🤝 Sistema de Matches
@@ -380,6 +340,10 @@ const CorretorDashboard: React.FC = () => {
                   }
                   size="small"
                   className="text-xs md:text-sm"
+                  onClick={() => {
+                    // Aqui você pode implementar filtro por status
+                    console.log("Mostrar apenas pendentes");
+                  }}
                 >
                   Pendentes ({matchesPendentes.length})
                 </Button>
@@ -387,6 +351,10 @@ const CorretorDashboard: React.FC = () => {
                   variant="secondary"
                   size="small"
                   className="text-xs md:text-sm"
+                  onClick={() => {
+                    // Aqui você pode implementar filtro por status
+                    console.log("Mostrar apenas ativos");
+                  }}
                 >
                   Ativos ({matchesAtivos.length})
                 </Button>
@@ -394,156 +362,36 @@ const CorretorDashboard: React.FC = () => {
                   variant="secondary"
                   size="small"
                   className="text-xs md:text-sm"
+                  onClick={() => {
+                    // Mostrar todos
+                    console.log("Mostrar todos");
+                  }}
                 >
                   Todos ({matches.length})
                 </Button>
               </div>
 
-              {/* Lista de Matches */}
+              {/* Lista de Matches usando o componente MatchCard */}
               <div className="space-y-4 md:space-y-6">
                 {matches.map((match) => (
-                  <div
+                  <MatchCard
                     key={match.id}
-                    className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 md:gap-6 p-4 md:p-6 bg-gray-50 rounded-xl border border-gray-200"
-                  >
-                    <div className="flex items-start gap-3 md:gap-4 flex-1">
-                      <div
-                        className={`
-                          p-3 md:p-4 rounded-lg text-2xl md:text-3xl flex-shrink-0
-                          ${
-                            match.tipo === "imobiliaria"
-                              ? "bg-blue-50"
-                              : "bg-emerald-50"
-                          }
-                        `}
-                      >
-                        {match.tipo === "imobiliaria" ? "🏢" : "🏗️"}
-                      </div>
-
-                      <div className="flex-1">
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 md:gap-3 mb-2 md:mb-3">
-                          <h3 className="text-gray-900 text-base md:text-lg font-semibold">
-                            {match.nome}
-                          </h3>
-                          <span
-                            className={`
-                              px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium self-start sm:self-center
-                              ${
-                                match.status === "ativo"
-                                  ? "bg-emerald-100 text-emerald-800"
-                                  : match.status === "pendente"
-                                    ? "bg-amber-100 text-amber-800"
-                                    : "bg-red-100 text-red-800"
-                              }
-                            `}
-                          >
-                            {match.status === "ativo"
-                              ? "Ativo"
-                              : match.status === "pendente"
-                                ? "Pendente"
-                                : match.status === "recusado"
-                                  ? "Recusado"
-                                  : "Desativado"}
-                          </span>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 text-xs md:text-sm text-gray-600 mb-2">
-                          <div>
-                            <strong className="text-gray-700">
-                              Localização:
-                            </strong>
-                            <br />
-                            {match.cidade} - {match.estado}
-                          </div>
-                          <div>
-                            <strong className="text-gray-700">
-                              Especialidades:
-                            </strong>
-                            <br />
-                            {match.especialidades.join(", ")}
-                          </div>
-                          <div>
-                            <strong className="text-gray-700">
-                              Avaliação:
-                            </strong>
-                            <br />
-                            {match.avaliacao} ⭐ ({match.totalAvaliacoes})
-                          </div>
-                          <div>
-                            <strong className="text-gray-700">
-                              Match Score:
-                            </strong>
-                            <br />
-                            {match.matchScore}%
-                          </div>
-                        </div>
-
-                        <div className="text-xs text-gray-500">
-                          Match realizado em:{" "}
-                          {new Date(match.dataMatch).toLocaleDateString(
-                            "pt-BR",
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-2 md:gap-3 w-full lg:w-auto mt-3 lg:mt-0">
-                      {match.status === "pendente" && (
-                        <div className="flex flex-col sm:flex-row gap-2 md:gap-3">
-                          <Button
-                            onClick={() => aceitarMatch(match.id)}
-                            variant="success"
-                            className="flex-1 lg:flex-none text-sm"
-                          >
-                            Aceitar Match
-                          </Button>
-                          <Button
-                            onClick={() => recusarMatch(match.id)}
-                            variant="danger"
-                            className="flex-1 lg:flex-none text-sm"
-                          >
-                            Recusar
-                          </Button>
-                        </div>
-                      )}
-
-                      {match.status === "ativo" && (
-                        <div className="flex flex-col sm:flex-row lg:flex-col gap-2 md:gap-3">
-                          <Button
-                            variant="primary"
-                            size="small"
-                            className="text-sm"
-                          >
-                            💬 Chat
-                          </Button>
-                          <Button
-                            onClick={() => desativarMatch(match.id)}
-                            variant="danger"
-                            size="small"
-                            className="text-sm"
-                          >
-                            Desativar Match
-                          </Button>
-                        </div>
-                      )}
-
-                      {(match.status === "recusado" ||
-                        match.status === "desativado") && (
-                        <Button
-                          variant="secondary"
-                          size="small"
-                          className="text-sm"
-                        >
-                          Reativar
-                        </Button>
-                      )}
-                    </div>
-                  </div>
+                    match={match}
+                    compact={false} // Modo completo na aba de matches
+                    showActions={true}
+                    onAccept={aceitarMatch}
+                    onDecline={recusarMatch}
+                    onDeactivate={desativarMatch}
+                    onReactivate={reativarMatch}
+                    onChat={abrirChat}
+                  />
                 ))}
               </div>
             </div>
           </div>
         )}
+
+        {/* Outras abas */}
         {(abaAtiva === "imoveis" ||
           abaAtiva === "clientes" ||
           abaAtiva === "relatorios") && (
