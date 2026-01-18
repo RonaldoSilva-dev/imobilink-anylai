@@ -5,6 +5,7 @@ import Button from "../common/Button";
 import CorretorProfile from "../profile/CorretorProfile";
 import { HeaderCorretorDashboard } from "./HeaderCorretorDashboard";
 import { WelcomeSection } from "./WelcomeSection";
+import { DashboardTabs, type DashboardTab } from "./DashboardTabs";
 
 type DashboardView = "main" | "profile";
 
@@ -39,9 +40,7 @@ const CorretorDashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const { loading, setLoading } = useLoading();
   const [currentView, setCurrentView] = useState<DashboardView>("main");
-  const [abaAtiva, setAbaAtiva] = useState<
-    "overview" | "matches" | "imoveis" | "clientes" | "relatorios"
-  >("overview");
+  const [abaAtiva, setAbaAtiva] = useState<DashboardTab>("overview");
 
   const [metricas, setMetricas] = useState<MetricasDashboard>({
     totalMatches: 0,
@@ -213,35 +212,7 @@ const CorretorDashboard: React.FC = () => {
           userName={user?.name}
           onProfileClick={() => setCurrentView("profile")}
         />
-        {/* Navegação por Abas */}
-        <div className="flex flex-wrap gap-2 md:gap-3 mb-6 md:mb-8 border-b border-gray-200 pb-3 md:pb-4">
-          {[
-            { id: "overview", label: "📈 Visão Geral", icon: "📈" },
-            { id: "matches", label: "🤝 Matches", icon: "🤝" },
-            { id: "imoveis", label: "🏠 Imóveis", icon: "🏠" },
-            { id: "clientes", label: "👥 Clientes", icon: "👥" },
-            { id: "relatorios", label: "📋 Relatórios", icon: "📋" },
-          ].map((aba) => (
-            <button
-              key={aba.id}
-              onClick={() => setAbaAtiva(aba.id as any)}
-              className={`
-                px-4 md:px-6 py-2 md:py-3 rounded-lg text-xs md:text-sm font-medium 
-                flex items-center gap-1 md:gap-2 transition-all duration-200 
-                whitespace-nowrap
-                ${
-                  abaAtiva === aba.id
-                    ? "bg-blue-600 text-white"
-                    : "bg-transparent text-gray-500 hover:bg-gray-100"
-                }
-              `}
-            >
-              <span>{aba.icon}</span>
-              {aba.label}
-            </button>
-          ))}
-        </div>
-
+        <DashboardTabs activeTab={abaAtiva} onTabChange={setAbaAtiva} />
         {/* Conteúdo das Abas */}
         {abaAtiva === "overview" && (
           <div className="space-y-6 md:space-y-8">
@@ -447,7 +418,6 @@ const CorretorDashboard: React.FC = () => {
             </div>
           </div>
         )}
-
         {/* Aba Matches */}
         {abaAtiva === "matches" && (
           <div>
@@ -628,7 +598,6 @@ const CorretorDashboard: React.FC = () => {
             </div>
           </div>
         )}
-
         {/* Abas Futuras */}
         {(abaAtiva === "imoveis" ||
           abaAtiva === "clientes" ||
