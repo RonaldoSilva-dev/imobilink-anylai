@@ -23,80 +23,87 @@ const Input: React.FC<InputProps> = ({
   required = false,
   error,
   isDark = false,
-  className,
+  className = "",
   disabled = false,
   helperText,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
 
+  // Preparar props do input para evitar a expressão direta
+  const inputProps: any = {
+    type: isPassword && showPassword ? "text" : type,
+    value,
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+      onChange(e.target.value),
+    placeholder,
+    required,
+    disabled,
+    className: `
+      w-full px-3 py-2 rounded-lg border text-base transition-colors duration-200
+      focus:outline-none focus:ring-2 focus:ring-blue-500
+      ${
+        error
+          ? "border-2 border-red-500 focus:border-red-500 focus:ring-red-500"
+          : isDark
+            ? "border-gray-600 focus:border-blue-500"
+            : "border-gray-300 focus:border-blue-500"
+      }
+      ${
+        isDark
+          ? disabled
+            ? "bg-gray-700 text-gray-400"
+            : "bg-gray-800 text-white"
+          : disabled
+            ? "bg-gray-100 text-gray-500"
+            : "bg-white text-gray-900"
+      }
+      ${disabled ? "cursor-not-allowed opacity-70" : ""}
+      ${isPassword ? "pr-10" : ""}
+    `,
+  };
+
+  // Adicionar aria-invalid apenas se houver erro
+  if (error) {
+    inputProps["aria-invalid"] = "true";
+  }
+
   return (
-    <div style={{ marginBottom: "1.5rem" }}>
+    <div className={`mb-6 ${className}`}>
+      {/* Label */}
       <label
-        style={{
-          display: "block",
-          marginBottom: "0.5rem",
-          fontWeight: "500",
-          color: isDark ? "#e5e7eb" : "#374151",
-        }}
+        className={`block mb-2 font-medium ${isDark ? "text-gray-300" : "text-gray-700"} ${disabled ? "text-gray-400" : ""}`}
       >
         {label}
-        {required && <span style={{ color: "#ef4444" }}> *</span>}
+        {required && <span className="text-red-500 ml-1">*</span>}
       </label>
 
-      <div style={{ position: "relative" }}>
-        <input
-          type={isPassword && showPassword ? "text" : type}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          required={required}
-          style={{
-            width: "100%",
-            padding: "0.75rem",
-            paddingRight: isPassword ? "3rem" : "0.75rem",
-            border: error
-              ? "1px solid #ef4444"
-              : `1px solid ${isDark ? "#4b5563" : "#d1d5db"}`,
-            borderRadius: "0.375rem",
-            backgroundColor: isDark ? "#374151" : "#fff",
-            color: isDark ? "#fff" : "#000",
-            fontSize: "1rem",
-            transition: "all 0.2s ease",
-          }}
-        />
+      {/* Container do input com botão de senha */}
+      <div className="relative">
+        <input {...inputProps} />
 
         {isPassword && (
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            style={{
-              position: "absolute",
-              right: "0.5rem",
-              top: "50%",
-              transform: "translateY(-50%)",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: "0.25rem",
-              color: isDark ? "#9ca3af" : "#6b7280",
-              fontSize: "1rem",
-            }}
+            className={`absolute right-3 top-1/2 transform -translate-y-1/2 p-1 rounded ${isDark ? "text-gray-400 hover:text-gray-300" : "text-gray-500 hover:text-gray-700"} ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"} transition-colors`}
+            disabled={disabled}
+            title={showPassword ? "Ocultar senha" : "Mostrar senha"}
           >
             {showPassword ? "🙈" : "👁️"}
           </button>
         )}
       </div>
 
-      {error && (
+      {/* Mensagem de erro */}
+      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+
+      {/* Texto de ajuda */}
+      {helperText && !error && (
         <p
-          style={{
-            color: "#ef4444",
-            fontSize: "0.875rem",
-            margin: "0.25rem 0 0 0",
-          }}
+          className={`text-sm mt-1 ${disabled ? "text-gray-400" : isDark ? "text-gray-400" : "text-gray-500"}`}
         >
-          {error}
+          {helperText}
         </p>
       )}
     </div>
