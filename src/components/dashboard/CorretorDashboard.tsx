@@ -6,6 +6,7 @@ import CorretorProfile from "../profile/CorretorProfile";
 import { HeaderCorretorDashboard } from "./HeaderCorretorDashboard";
 import { WelcomeSection } from "./WelcomeSection";
 import { DashboardTabs, type DashboardTab } from "./DashboardTabs";
+import { FeaturePlaceholder } from "./FeaturePlaceholder";
 
 type DashboardView = "main" | "profile";
 
@@ -598,37 +599,13 @@ const CorretorDashboard: React.FC = () => {
             </div>
           </div>
         )}
-        {/* Abas Futuras */}
         {(abaAtiva === "imoveis" ||
           abaAtiva === "clientes" ||
           abaAtiva === "relatorios") && (
-          <div className="bg-white p-6 md:p-12 rounded-2xl shadow-sm border border-gray-200 text-center">
-            <div className="text-4xl md:text-5xl mb-3 md:mb-4">
-              {abaAtiva === "imoveis"
-                ? "🏠"
-                : abaAtiva === "clientes"
-                  ? "👥"
-                  : "📋"}
-            </div>
-            <h2 className="text-gray-900 text-xl md:text-2xl font-semibold mb-3 md:mb-4">
-              {abaAtiva === "imoveis"
-                ? "Gestão de Imóveis"
-                : abaAtiva === "clientes"
-                  ? "Gestão de Clientes"
-                  : "Relatórios e Analytics"}
-            </h2>
-            <p className="text-gray-600 text-base md:text-lg mb-4 md:mb-6">
-              Esta funcionalidade está em desenvolvimento e será implementada em
-              breve!
-            </p>
-            <Button
-              onClick={() => setAbaAtiva("overview")}
-              variant="primary"
-              className="mx-auto"
-            >
-              Voltar para o Dashboard
-            </Button>
-          </div>
+          <FeaturePlaceholder
+            featureType={abaAtiva}
+            onBack={() => setAbaAtiva("overview")}
+          />
         )}
       </main>
     </div>
