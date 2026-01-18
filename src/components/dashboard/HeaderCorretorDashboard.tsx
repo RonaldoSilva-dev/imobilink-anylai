@@ -17,7 +17,7 @@ export const HeaderCorretorDashboard: React.FC<
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center gap-3">
           <h1 className="text-blue-600 text-xl md:text-2xl font-bold">
-            🏠 Dlogg LinkImobili
+            🏠 Imobilink-Anylai
           </h1>
           <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs md:text-sm font-medium">
             Área do Corretor
