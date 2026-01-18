@@ -1,14 +1,17 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 
 interface InputProps {
-  label: string
-  type?: string
-  value: string
-  onChange: (value: string) => void
-  placeholder?: string
-  required?: boolean
-  error?: string
-  isDark?: boolean
+  label: string;
+  type?: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  required?: boolean;
+  error?: string;
+  isDark?: boolean;
+  className?: string;
+  disabled?: boolean;
+  helperText?: string;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -19,23 +22,28 @@ const Input: React.FC<InputProps> = ({
   placeholder,
   required = false,
   error,
-  isDark = false
+  isDark = false,
+  className,
+  disabled = false,
+  helperText,
 }) => {
-  const [showPassword, setShowPassword] = useState(false)
-  const isPassword = type === "password"
+  const [showPassword, setShowPassword] = useState(false);
+  const isPassword = type === "password";
 
   return (
     <div style={{ marginBottom: "1.5rem" }}>
-      <label style={{
-        display: "block",
-        marginBottom: "0.5rem",
-        fontWeight: "500",
-        color: isDark ? "#e5e7eb" : "#374151"
-      }}>
+      <label
+        style={{
+          display: "block",
+          marginBottom: "0.5rem",
+          fontWeight: "500",
+          color: isDark ? "#e5e7eb" : "#374151",
+        }}
+      >
         {label}
         {required && <span style={{ color: "#ef4444" }}> *</span>}
       </label>
-      
+
       <div style={{ position: "relative" }}>
         <input
           type={isPassword && showPassword ? "text" : type}
@@ -47,17 +55,17 @@ const Input: React.FC<InputProps> = ({
             width: "100%",
             padding: "0.75rem",
             paddingRight: isPassword ? "3rem" : "0.75rem",
-            border: error 
-              ? "1px solid #ef4444" 
+            border: error
+              ? "1px solid #ef4444"
               : `1px solid ${isDark ? "#4b5563" : "#d1d5db"}`,
             borderRadius: "0.375rem",
             backgroundColor: isDark ? "#374151" : "#fff",
             color: isDark ? "#fff" : "#000",
             fontSize: "1rem",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
           }}
         />
-        
+
         {isPassword && (
           <button
             type="button"
@@ -72,25 +80,27 @@ const Input: React.FC<InputProps> = ({
               cursor: "pointer",
               padding: "0.25rem",
               color: isDark ? "#9ca3af" : "#6b7280",
-              fontSize: "1rem"
+              fontSize: "1rem",
             }}
           >
             {showPassword ? "🙈" : "👁️"}
           </button>
         )}
       </div>
-      
+
       {error && (
-        <p style={{
-          color: "#ef4444",
-          fontSize: "0.875rem",
-          margin: "0.25rem 0 0 0"
-        }}>
+        <p
+          style={{
+            color: "#ef4444",
+            fontSize: "0.875rem",
+            margin: "0.25rem 0 0 0",
+          }}
+        >
           {error}
         </p>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Input
+export default Input;
