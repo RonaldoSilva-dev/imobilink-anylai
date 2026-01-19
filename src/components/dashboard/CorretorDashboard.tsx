@@ -12,6 +12,7 @@ import { StatsCard } from "./StatsCard";
 import MatchCard, { EmpresaMatch } from "./MatchCard";
 
 type DashboardView = "main" | "profile";
+type MatchFilter = "todos" | "pendentes" | "ativos" | "inativos";
 
 interface MetricasDashboard {
   totalMatches: number;
@@ -28,6 +29,8 @@ const CorretorDashboard: React.FC = () => {
   const { loading, setLoading } = useLoading();
   const [currentView, setCurrentView] = useState<DashboardView>("main");
   const [abaAtiva, setAbaAtiva] = useState<DashboardTab>("overview");
+  // Adicionar estado para o filtro de matches
+  const [matchFilter, setMatchFilter] = useState<MatchFilter>("todos");
 
   const [metricas, setMetricas] = useState<MetricasDashboard>({
     totalMatches: 0,
@@ -96,10 +99,29 @@ const CorretorDashboard: React.FC = () => {
 
   // Filtrar matches por status
   const matchesAtivos = matches.filter((match) => match.status === "ativo");
-  const matchesPendentes = matches.filter(
-    (match) => match.status === "pendente",
-  );
+  const matchesPendentes = matches.filter((match) => match.status === "pendente" );
+  const matchesInativos = matches.filter((match) => match.status === "desativado" );
 
+  // Função para obter matches filtrados
+  const getFilteredMatches = (): EmpresaMatch[] => {
+    switch (matchFilter) {
+      case "pendentes":
+        return matchesPendentes;
+      case "ativos":
+        return matchesAtivos;
+      case "inativos":
+        return matchesInativos;
+      case "todos":
+      default:
+        return matches;
+    }
+  };
+
+  // Função para alterar o filtro
+  const handleFilterChange = (filter: MatchFilter) => {
+    setMatchFilter(filter);
+  };
+  
   // Carregar dados do dashboard
   useEffect(() => {
     const loadDashboardData = async () => {
@@ -210,6 +232,21 @@ const CorretorDashboard: React.FC = () => {
           dataMatch: "2024-01-18",
           ultimaInteracao: "2024-01-18",
         },
+        {
+          id: "7",
+          nome: "Imobiliária Epsilon",
+          tipo: "imobiliaria",
+          cidade: "Brasília",
+          estado: "DF",
+          especialidades: ["Residencial", "Corporativo"],
+          avaliacao: 4.4,
+          totalAvaliacoes: 91,
+          fotoUrl: "",
+          matchScore: 81,
+          status: "pendente",
+          dataMatch: "2024-01-23",
+          ultimaInteracao: "2024-01-23",
+        },
       ];
 
       setMetricas(mockMetricas);
@@ -235,6 +272,9 @@ const CorretorDashboard: React.FC = () => {
       </div>
     );
   }
+
+  // Obter matches filtrados
+  const matchesFiltrados = getFilteredMatches();
 
   // View principal do dashboard
   return (
@@ -335,57 +375,64 @@ const CorretorDashboard: React.FC = () => {
               {/* Filtros */}
               <div className="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-8">
                 <Button
-                  variant={
-                    matchesPendentes.length > 0 ? "primary" : "secondary"
-                  }
+                  variant={matchFilter === "todos" ? "primary" : "secondary"}
                   size="small"
                   className="text-xs md:text-sm"
-                  onClick={() => {
-                    // Aqui você pode implementar filtro por status
-                    console.log("Mostrar apenas pendentes");
-                  }}
+                  onClick={() => handleFilterChange("todos")}
+                >
+                  Todos ({matches.length})
+                </Button>
+                <Button
+                  variant={matchFilter === "pendentes" ? "primary" : "secondary"}
+                  size="small"
+                  className="text-xs md:text-sm"
+                  onClick={() => handleFilterChange("pendentes")}
                 >
                   Pendentes ({matchesPendentes.length})
                 </Button>
                 <Button
-                  variant="secondary"
+                  variant={matchFilter === "ativos" ? "primary" : "secondary"}
                   size="small"
                   className="text-xs md:text-sm"
-                  onClick={() => {
-                    // Aqui você pode implementar filtro por status
-                    console.log("Mostrar apenas ativos");
-                  }}
+                  onClick={() => handleFilterChange("ativos")}
                 >
                   Ativos ({matchesAtivos.length})
                 </Button>
                 <Button
-                  variant="secondary"
+                  variant={matchFilter === "inativos" ? "primary" : "secondary"}
                   size="small"
                   className="text-xs md:text-sm"
-                  onClick={() => {
-                    // Mostrar todos
-                    console.log("Mostrar todos");
-                  }}
+                  onClick={() => handleFilterChange("inativos")}
                 >
-                  Todos ({matches.length})
+                  Inativos ({matchesInativos.length})
                 </Button>
               </div>
 
-              {/* Lista de Matches usando o componente MatchCard */}
+              {/* Lista de Matches filtrados */}
               <div className="space-y-4 md:space-y-6">
-                {matches.map((match) => (
-                  <MatchCard
-                    key={match.id}
-                    match={match}
-                    compact={false} // Modo completo na aba de matches
-                    showActions={true}
-                    onAccept={aceitarMatch}
-                    onDecline={recusarMatch}
-                    onDeactivate={desativarMatch}
-                    onReactivate={reativarMatch}
-                    onChat={abrirChat}
-                  />
-                ))}
+                {matchesFiltrados.length > 0 ? (
+                  matchesFiltrados.map((match) => (
+                    <MatchCard
+                      key={match.id}
+                      match={match}
+                      compact={false} // Modo completo na aba de matches
+                      showActions={true}
+                      onAccept={aceitarMatch}
+                      onDecline={recusarMatch}
+                      onDeactivate={desativarMatch}
+                      onReactivate={reativarMatch}
+                      onChat={abrirChat}
+                    />
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <div className="text-4xl mb-4">🔍</div>
+                    <p className="text-lg mb-2">Nenhum match encontrado</p>
+                    <p className="text-sm">
+                      Não há matches com o filtro "{matchFilter}" aplicado.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
