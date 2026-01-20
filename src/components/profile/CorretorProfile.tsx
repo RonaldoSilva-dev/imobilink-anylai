@@ -3,7 +3,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useLoading } from "../../contexts/LoadingContext";
 import Input from "../common/Input";
 import Button from "../common/Button";
-import FileUpload from "../common/FileUpload";
+import FileUpload from "../FileUpload";
 
 // Interface para certificados
 interface Certificado {
