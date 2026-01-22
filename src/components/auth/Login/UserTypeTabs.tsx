@@ -1,4 +1,4 @@
-import type { UserType } from "./types";
+import { UserType } from "../../../types/authTypes";
 
 /**
  * Propriedades aceitas pelo componente `UserTypeTabs`.

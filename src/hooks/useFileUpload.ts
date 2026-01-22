@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { validateFileType, validateFileSize } from "./FileUpload.utils";
+import { validateFileSize, validateFileType } from "../utils/fileUploadUtils";
 
 interface UseFileUploadProps {
   accept: string;

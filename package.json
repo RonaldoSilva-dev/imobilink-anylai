@@ -1,6 +1,6 @@
 {
-  "name": "dlogg-platform-frontend",
-  "private": true,
+  "name": "imobilink-anylai",
+  "private": false,
   "version": "1.0.0",
   "type": "module",
   "scripts": {

@@ -1,4 +1,4 @@
-import type { AuthTab } from "./types";
+import { AuthTab } from "../../../types/authTypes";
 
 /**
  * Propriedades aceitas pelo componente `LoginTabs`.

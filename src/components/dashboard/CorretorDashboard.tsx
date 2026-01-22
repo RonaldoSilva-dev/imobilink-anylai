@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { useLoading } from "../../contexts/LoadingContext";
+import { useAuth } from "../../contexts/authContext";
+import { useLoading } from "../../contexts/loadingContext";
 import Button from "../common/Button";
 import CorretorProfile from "../profile/CorretorProfile";
 import { HeaderCorretorDashboard } from "./HeaderCorretorDashboard";

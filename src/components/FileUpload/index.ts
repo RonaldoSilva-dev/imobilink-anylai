@@ -2,9 +2,9 @@
 export { default } from "./FileUpload";
 
 // Exportação dos tipos para uso externo
-export type { FileUploadProps } from "./FileUpload.types";
+export type { FileUploadProps } from "../../types/fileUploadTypes";
 
-// Exportações opcionais dos utilitários e subcomponentes (se necessário)
+// Exportações opcionais dos utilitários
 export {
   validateFileType,
   validateFileSize,
@@ -12,7 +12,10 @@ export {
   formatFileSize,
   getFileIcon,
   getFileTypeDescription,
-} from "./FileUpload.utils";
+} from "../../utils/fileUploadUtils";
 
+// Exportação do FilePreview
 export { default as FilePreview } from "./FilePreview";
-export { useFileUpload } from "./FileUpload.hooks";
+
+// Exportação do hook
+export { useFileUpload } from "../../hooks/useFileUpload";

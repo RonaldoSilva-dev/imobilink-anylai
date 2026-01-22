@@ -1,6 +1,6 @@
 import Input from "../../common/Input";
 import Button from "../../common/Button";
-import type { LoginErrors } from "./types";
+import { LoginErrors } from "../../../types/authTypes";
 
 /**
  * Propriedades aceitas pelo componente `LoginForm`.

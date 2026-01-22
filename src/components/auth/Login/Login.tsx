@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import { useAuth } from "../../../contexts/AuthContext";
-import { useLoading } from "../../../contexts/LoadingContext";
-import Register from "../Register";
-
+import { useAuth } from "../../../contexts/authContext";
+import { useLoading } from "../../../contexts/loadingContext";
+import Register from "../register/Register";
 import LoginHeader from "./LoginHeader";
 import LoginTabs from "./LoginTabs";
 import UserTypeTabs from "./UserTypeTabs";
 import LoginForm from "./LoginForm";
-import { AuthTab, LoginErrors, UserType } from "./types";
+import { AuthTab, LoginErrors, UserType } from "../../../types/authTypes";
 
 const Login: React.FC = () => {
   const { login } = useAuth();

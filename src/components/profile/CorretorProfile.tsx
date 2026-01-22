@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { useLoading } from "../../contexts/LoadingContext";
+import { useAuth } from "../../contexts/authContext";
+import { useLoading } from "../../contexts/loadingContext";
 import Input from "../common/Input";
 import Button from "../common/Button";
-import FileUpload from "../FileUpload";
+import FileUpload from "../fileUpload";
 
 // Interface para certificados
 interface Certificado {
