@@ -5,6 +5,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "danger" | "success";
   size?: "small" | "medium" | "large";
   loading?: boolean;
+  disabled?: boolean;
   fullWidth?: boolean;
 }
 
@@ -13,6 +14,7 @@ const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   size = "medium",
   loading = false,
+  disabled = false,
   fullWidth = false,
   className = "",
   ...props
@@ -44,8 +46,15 @@ const Button: React.FC<ButtonProps> = ({
   // Classe final
   const buttonClass = `${baseClasses} ${variants[variant]} ${sizes[size]} ${width} ${className}`;
 
+  // 🔥 CORREÇÃO CRÍTICA: Desabilita se loading OU disabled
+  const isDisabled = disabled || loading;
+
   return (
-    <button className={buttonClass} {...props}>
+    <button
+      className={buttonClass}
+      disabled={isDisabled} // 🔥 APLICA O DISABLED AQUI
+      {...props}
+    >
       {loading && (
         <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
       )}

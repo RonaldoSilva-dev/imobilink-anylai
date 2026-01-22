@@ -1,8 +1,8 @@
 import React from "react";
-import { AuthProvider } from "./contexts/authContext";
 import { LoadingProvider } from "./contexts/loadingContext";
 import LoadingBar from "./components/common/LoadingBar";
 import AppRouter from "./routers/AppRouter";
+import { AuthProvider } from "./contexts/authContext";
 
 const App: React.FC = () => {
   return (

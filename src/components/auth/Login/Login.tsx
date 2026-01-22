@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import { useAuth } from "../../../contexts/authContext";
 import { useLoading } from "../../../contexts/loadingContext";
-import Register from "../register/Register";
 import LoginHeader from "./LoginHeader";
 import LoginTabs from "./LoginTabs";
 import UserTypeTabs from "./UserTypeTabs";
 import LoginForm from "./LoginForm";
 import { AuthTab, LoginErrors, UserType } from "../../../types/authTypes";
+import Register from "../Register/Register";
+import { useAuth } from "../../../contexts/authContext";
 
 const Login: React.FC = () => {
   const { login } = useAuth();
-  const { loading } = useLoading();
+  const { loading, setLoading } = useLoading(); // ⬅️ Agora pegando setLoading
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,10 +22,20 @@ const Login: React.FC = () => {
     e.preventDefault();
     setErrors({});
 
-    const result = await login(email, password, userType);
+    // ATIVA a barra de loading
+    setLoading(true);
 
-    if (!result.success) {
-      setErrors({ general: result.error });
+    try {
+      const result = await login(email, password, userType);
+
+      if (!result.success) {
+        setErrors({ general: result.error });
+      }
+    } catch (error) {
+      setErrors({ general: "Erro inesperado ao fazer login" });
+    } finally {
+      // DESATIVA a barra de loading (sempre executa)
+      setLoading(false);
     }
   };
 
@@ -49,11 +59,13 @@ const Login: React.FC = () => {
         <LoginHeader />
         <LoginTabs activeTab={activeTab} onTabChange={handleTabChange} />
         <UserTypeTabs userType={userType} onUserTypeChange={setUserType} />
+
+        {/* Passe loading para o LoginForm */}
         <LoginForm
           email={email}
           password={password}
           errors={errors}
-          loading={loading}
+          loading={loading} // ⬅️ Agora vai refletir o estado correto
           onEmailChange={setEmail}
           onPasswordChange={setPassword}
           onClearErrors={clearErrors}
