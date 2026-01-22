@@ -121,6 +121,7 @@ const LoginForm = ({
         placeholder="seu@email.com"
         required
         error={errors.email}
+        disabled={loading}
       />
 
       {/* 
@@ -144,6 +145,7 @@ const LoginForm = ({
         placeholder="Sua senha"
         required
         error={errors.password}
+        disabled={loading}
       />
 
       {/* 
@@ -172,8 +174,7 @@ const LoginForm = ({
         - Credenciais: Fornece dados pré-definidos para facilitar testes
       */}
       <div className="text-sm text-gray-500 mb-4">
-        <strong>Demo:</strong> Use "corretor@exemplo.com" ou
-        "gestor@exemplo.com" com senha "123456"
+        <strong>Demo:</strong> Use "corretor@exemplo.com" com senha "123456"
       </div>
 
       {/* 
@@ -183,7 +184,12 @@ const LoginForm = ({
         - className: "w-full" - Ocupa 100% da largura disponível
         - Texto dinâmico: Mostra "Entrando..." durante loading ou "Entrar" normalmente
       */}
-      <Button type="submit" loading={loading} className="w-full">
+      <Button
+        type="submit"
+        loading={loading}
+        className="w-full"
+        disabled={loading}
+      >
         {loading ? "Entrando..." : "Entrar"}
       </Button>
     </form>

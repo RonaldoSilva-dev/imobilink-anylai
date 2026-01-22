@@ -7,10 +7,13 @@ const LoadingBar: React.FC = () => {
   if (!loading) return null;
 
   return (
-    <div className="fixed top-0 left-0 w-full h-1 bg-transparent z-50 overflow-hidden">
-      <div className="h-full w-full bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500 to-400% animate-[shimmer_1.5s_ease-in-out_infinite] -translate-x-full" />
+    <div className="fixed top-0 left-0 w-full h-1 z-[9999] bg-gray-100/20 overflow-hidden">
+      <div
+        className="h-full w-full animate-progress-infinite 
+                   bg-[linear-gradient(90deg,#3b82f6_0%,#a855f7_25%,#10b981_50%,#3b82f6_75%,#a855f7_100%)] 
+                   bg-[length:200%_100%]"
+      />
     </div>
   );
 };
-
 export default LoadingBar;
