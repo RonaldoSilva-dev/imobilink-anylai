@@ -1,9 +1,9 @@
 import React from "react";
 import {
+  formatFileSize,
   getFileIcon,
   getFileTypeDescription,
-  formatFileSize,
-} from "./FileUpload.utils";
+} from "../../utils/fileUploadUtils";
 
 interface FilePreviewProps {
   previewUrl?: string | null;

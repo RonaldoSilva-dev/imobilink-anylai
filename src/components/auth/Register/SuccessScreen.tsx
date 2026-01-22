@@ -1,6 +1,6 @@
 // Cria um componente de tela de sucesso para exibir uma mensagem após o registro bem-sucedido do usuário.
+import { SuccessData } from "../../../types/registerTypes";
 import Button from "../../common/Button";
-import { SuccessData } from "./types";
 
 interface SuccessScreenProps {
   userData: SuccessData;

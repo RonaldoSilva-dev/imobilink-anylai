@@ -1,21 +1,21 @@
 // Cria o componente de registro de usuário com formulários, validação e feedback de sucesso.
 import React, { useState } from "react";
-import { useAuth } from "../../../contexts/AuthContext";
-import { useLoading } from "../../../contexts/LoadingContext";
+import { useAuth } from "../../../contexts/authContext";
+import { useLoading } from "../../../contexts/loadingContext";
 import Button from "../../common/Button";
 import RegisterHeader from "./RegisterHeader";
 import PersonalInfoForm from "./PersonalInfoForm";
 import SecurityInfoForm from "./SecurityInfoForm";
 import SuccessScreen from "./SuccessScreen";
 import TermsAndConditions from "./TermsAndConditions";
-import { validateForm, formatPhone } from "./utils";
-import UserTypeSelector from "../Login/UserTypeTabs";
+import UserTypeSelector from "../login/UserTypeTabs";
 import {
-  RegisterFormData,
   FormErrors,
-  SuccessData,
+  RegisterFormData,
   RegisterProps,
-} from "./types";
+  SuccessData,
+} from "../../../types/registerTypes";
+import { formatPhone, validateForm } from "../../../utils/registerUtils";
 
 const Register: React.FC<RegisterProps> = ({ onBack }) => {
   const { register } = useAuth();
@@ -37,7 +37,10 @@ const Register: React.FC<RegisterProps> = ({ onBack }) => {
     null,
   );
 
-  const handleChange = (field: keyof RegisterFormData, value: string) => {
+  const handleChange = (
+    field: keyof RegisterFormData | string,
+    value: string,
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));

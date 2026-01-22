@@ -1,6 +1,6 @@
 import React from "react";
-import { AuthProvider } from "./contexts/AuthContext";
-import { LoadingProvider } from "./contexts/LoadingContext";
+import { AuthProvider } from "./contexts/authContext";
+import { LoadingProvider } from "./contexts/loadingContext";
 import LoadingBar from "./components/common/LoadingBar";
 import AppRouter from "./routers/AppRouter";
 

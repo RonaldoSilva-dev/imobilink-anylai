@@ -1,5 +1,5 @@
 // Dashboard temporário para Gestor
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/authContext";
 const GestorDashboard: React.FC = () => {
   const { user, logout } = useAuth();
 

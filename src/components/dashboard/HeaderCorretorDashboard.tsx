@@ -1,6 +1,6 @@
 // src/components/dashboard/HeaderCorretorDashboard.tsx
 import React from "react";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/authContext";
 import Button from "../common/Button";
 
 interface HeaderCorretorDashboardProps {

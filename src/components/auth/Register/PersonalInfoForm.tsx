@@ -1,12 +1,12 @@
 // Cria um formulário para coletar informações pessoais do usuário durante o registro, incluindo nome, email, telefone e experiência (se aplicável).
+import { FormErrors, RegisterFormData } from "../../../types/registerTypes";
 import Input from "../../common/Input";
 import ExperienceSelect from "./ExperienceSelect";
-import { RegisterFormData, FormErrors } from "./types";
 
 interface PersonalInfoFormProps {
   formData: RegisterFormData;
   errors: FormErrors;
-  onFieldChange: (field: keyof RegisterFormData, value: string) => void;
+  onFieldChange: (field: string, value: string) => void;
   formatPhone: (value: string) => string;
 }
 

@@ -1,7 +1,7 @@
-import Login from "../components/auth/Login";
+import Login from "../components/auth/login/Login";
 import CorretorDashboard from "../components/dashboard/CorretorDashboard";
 import GestorDashboard from "../components/dashboard/GestorDashboard";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/authContext";
 
 const AppRouter: React.FC = () => {
   const { isAuthenticated, user } = useAuth();

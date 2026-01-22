@@ -25,81 +25,64 @@
 
 ## 2. NOSSA ESTRUTURA ATUALIZADA
 
-```
+````
 src/
-├── components/               # 👥 Componentes Reutilizáveis
-│   ├── auth/                # Componentes de autenticação
-│   │   ├── Login/          # Componentes da tela de login
+├── components/               # 👥 Componentes (sempre minúsculo)
+│   ├── auth/                # (minúsculo)
+│   │   ├── Login/          # (PascalCase porque é componente específico)
 │   │   │   ├── LoginHeader.tsx
-│   │   │   ├── LoginTabs.tsx
 │   │   │   ├── LoginForm.tsx
+│   │   │   ├── LoginTabs.tsx
 │   │   │   ├── UserTypeTabs.tsx
 │   │   │   └── types.ts
-│   │   └── Register/       # Componentes da tela de registro
+│   │   └── register/       # (minúsculo)
 │   │       ├── RegisterHeader.tsx
 │   │       ├── PersonalInfoForm.tsx
-│   │       ├── SecurityInfoForm.tsx
-│   │       ├── SuccessScreen.tsx
-│   │       ├── TermsAndConditions.tsx
-│   │       ├── utils.ts
 │   │       └── types.ts
-│   ├── common/             # Componentes compartilhados
+│   ├── common/             # (minúsculo) - Componentes compartilhados
 │   │   ├── Button.tsx
 │   │   ├── Input.tsx
-│   │   ├── LoadingBar.tsx
 │   │   └── LoadingSpinner.tsx
-│   ├── dashboard/          # Componentes do dashboard
+│   ├── dashboard/          # (minúsculo)
 │   │   ├── CorretorDashboard.tsx
-│   │   ├── Dashboard.tsx
 │   │   ├── DashboardTabs.tsx
-│   │   ├── FeaturePlaceholder.tsx
-│   │   ├── GestorDashboard.tsx
-│   │   ├── HeaderCorretorDashboard.tsx
 │   │   ├── MatchCard.tsx
-│   │   ├── QuickActions.tsx
-│   │   ├── StatsCard.tsx
-│   │   └── WelcomeSection.tsx
-│   ├── FileUpload/         # Componentes de upload de arquivo
+│   │   └── StatsCard.tsx
+│   ├── fileUpload/         # (minúsculo) - Corrigido!
 │   │   ├── FileUpload.tsx
 │   │   ├── FilePreview.tsx
-│   │   ├── FileUpload.hooks.ts
-│   │   ├── FileUpload.utils.ts
-│   │   ├── FileUpload.types.ts
-│   │   └── index.ts
-│   └── profile/            # Componentes de perfil
+│   │   ├── useFileUpload.ts
+│   │   └── types.ts
+│   └── profile/            # (minúsculo) - Corrigido!
 │       ├── CorretorProfile.tsx
-│       └── modules/        # (Sugestão) Módulos do perfil
+│       └── sections/       # (minúsculo)
 │           ├── PersonalInfoSection.tsx
-│           ├── ProfessionalInfoSection.tsx
-│           ├── SpecializationsSection.tsx
-│           ├── LanguagesSection.tsx
-│           └── UploadDocumentsSection.tsx
-├── contexts/               # ⚙️ Contextos React
-│   ├── AuthContext.tsx
-│   └── LoadingContext.tsx
-├── routers/                # 🧭 Roteamento
-│   └── AppRouter.tsx
-├── utils/                  # 🛠️ Utilitários
-│   ├── fileValidation.ts   # Funções de validação de arquivos
-│   ├── formatadores/       # Funções de formatação
-│   │   └── formatDate.ts
-│   ├── validadores/        # Funções de validação
-│   │   └── validateEmail.ts
-│   └── api/               # Serviços de API (futuro)
-│       ├── corretores.ts
-│       └── auth.ts
-├── types/                  # 📝 Tipos TypeScript Globais
-│   ├── user.ts            # Tipos relacionados a usuários
-│   ├── dashboard.ts       # Tipos do dashboard
-│   └── common.ts          # Tipos compartilhados
-├── hooks/                 # ⚓ Hooks Customizados
+│           └── ProfessionalInfoSection.tsx
+├── hooks/                  # ⚓ (sempre minúsculo) - PADRÃO REACT
 │   ├── useAuth.ts
-│   ├── useLoading.ts
-│   └── useFileUpload.ts
-└── styles/               # 🎨 Estilos Globais
+│   └── useLoading.ts
+├── utils/                  # 🛠️ (sempre minúsculo)
+│   ├── formatters/        # (minúsculo)
+│   │   └── formatDate.ts
+│   ├── validators/        # (minúsculo)
+│   │   └── validateEmail.ts
+│   └── fileHandlers/      # (minúsculo)
+│       └── fileValidation.ts
+├── contexts/              # ⚙️ (sempre minúsculo) - PADRÃO REACT
+│   ├── authContext.tsx    # (camelCase para arquivos)
+│   └── loadingContext.tsx # (camelCase para arquivos)
+├── types/                 # 📝 (sempre minúsculo)
+│   ├── user.ts
+│   ├── dashboard.ts
+│   └── common.ts
+├── routers/               # 🧭 (sempre minúsculo)
+│   └── AppRouter.tsx
+├── pages/                 # 🖥️ (sempre minúsculo) - Se tiver
+│   ├── LoginPage.tsx
+│   └── DashboardPage.tsx
+└── styles/                # 🎨 (sempre minúsculo)
     ├── globals.css
-    └── variables.css
-```
+    └── variables.css```
 
 ## 3. PADRÕES DE CÓDIGO
 
@@ -145,7 +128,7 @@ const Component: React.FC<ComponentProps> = ({
 };
 
 export default Component;
-```
+````
 
 ### 3.3 Convenções de Estilização
 

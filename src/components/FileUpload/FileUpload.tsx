@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "../common/Button";
-import { FileUploadProps } from "./FileUpload.types";
-import { useFileUpload } from "./FileUpload.hooks";
+import { FileUploadProps } from "../../types/fileUploadTypes";
+import { useFileUpload } from "../../hooks/useFileUpload";
 import FilePreview from "./FilePreview";
 
 /**

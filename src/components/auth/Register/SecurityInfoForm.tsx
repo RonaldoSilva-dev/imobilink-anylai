@@ -1,11 +1,11 @@
 // Cria um formulário para coletar informações de segurança do usuário durante o registro, incluindo campos para senha e confirmação de senha, com dicas para criar uma senha segura.
+import { FormErrors, RegisterFormData } from "../../../types/registerTypes";
 import Input from "../../common/Input";
-import { RegisterFormData, FormErrors } from "./types";
 
 interface SecurityInfoFormProps {
   formData: RegisterFormData;
   errors: FormErrors;
-  onFieldChange: (field: keyof RegisterFormData, value: string) => void;
+  onFieldChange: (field: string, value: string) => void;
 }
 
 const SecurityInfoForm = ({

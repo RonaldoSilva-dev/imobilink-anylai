@@ -1,5 +1,6 @@
 // Cria um arquivo de utilitários TypeScript para o componente de registro, incluindo funções de validação e formatação.
-import { RegisterFormData, FormErrors } from "./types";
+
+import { FormErrors, RegisterFormData } from "../types/registerTypes";
 
 export const validateForm = (formData: RegisterFormData): FormErrors => {
   const errors: FormErrors = {};

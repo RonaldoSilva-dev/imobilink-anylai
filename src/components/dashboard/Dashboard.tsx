@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/authContext";
 import { useNavigate } from "react-router-dom";
 import Button from "../common/Button";
 
